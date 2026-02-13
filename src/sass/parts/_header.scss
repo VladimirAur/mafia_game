@@ -1,0 +1,19 @@
+.header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 10px;
+	// .header__name
+	&__name {
+		font-family: $ms-rg;
+	}
+
+	// .header__nav
+	&__nav {
+	}
+
+	// .header__nav-item
+	&__nav-item {
+		font-family: $ms-sb;
+	}
+}
