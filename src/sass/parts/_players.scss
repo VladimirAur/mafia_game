@@ -1,6 +1,6 @@
 .players {
-	padding: 10px 0 0 0;
-	background-color: $text-icons;
+	padding: 10px;
+	background-color: #f8fafa;
 	// .players__list
 	&__list {
 	}
@@ -9,59 +9,119 @@
 .player {
 	display: flex;
 	align-items: center;
+	margin-bottom: 10px;
+	&--empty {
+		opacity: 0.5;
+	}
+
 	// .player__number
 
 	&__number {
+		width: 20px;
+		padding: 10px 10px;
+		margin-right: 5px;
+		font-family: $ms-bd;
+		font-size: 16px;
+		text-align: center;
+		color: $text-icons;
+		// border: 2px solid $primary-dark;
+		border-radius: 5px;
+		&--default {
+			background-color: $primary;
+			border: 2px solid $primary;
+		}
+		&--red {
+			background-color: $accent;
+			border: 2px solid $accent;
+		}
+		&--black {
+			background-color: $text-primary;
+			border: 2px solid $text-primary;
+		}
 	}
 
 	// .player__desc
-
 	&__desc {
 		width: 100%;
 		display: flex;
 		justify-content: space-between;
+		padding: 5px 0;
 		align-items: center;
+		border-radius: 5px;
+		&--default {
+			border: 2px solid $primary;
+		}
+		&--red {
+			border: 2px solid $accent;
+		}
+		&--black {
+			border: 2px solid $text-primary;
+		}
 	}
 
 	// .player__name
-
 	&__name {
+		padding: 5px 10px;
+		margin-right: 5px;
+		font-family: $rb-rg;
+		font-size: 16px;
 	}
 
 	// .player__status
-
 	&__status {
 		display: flex;
 		align-items: center;
 	}
 
 	// .player__role
-
 	&__role {
+		padding: 3px 7px;
+		margin-right: 20px;
+		font-family: $rb-md;
+		font-size: 16px;
+		color: $text-primary;
+		border-left: 2px solid $text-secondary;
+		border-right: 2px solid $text-secondary;
+		border-radius: 20px;
 	}
 
 	// .player__foll
-
 	&__foll {
 		display: flex;
 		align-items: center;
+		padding: 0 5px;
 	}
 
 	// .player__foll-name
-
 	&__foll-name {
+		margin-right: 5px;
+		font-family: $rb-rg;
+		font-size: 14px;
+		color: $text-primary;
 	}
-
 	// .player__foll-btn
-
 	&__foll-btn {
+		font-family: $rb-rg;
+		font-size: 17px;
+		color: $text-icons;
+		background-color: $primary;
+	}
+	// .player__foll-left
+	&__foll-left {
+		border-radius: 0 5px 5px 0;
+	}
+	// .player__foll-right
+	&__foll-right {
+		border-radius: 5px 0 0 5px;
 	}
 
 	// .player__foll-count
 
 	&__foll-count {
 		display: block;
-		width: 15px;
-		border: 1px solid $divider;
+		padding-left: 5px;
+		width: 12px;
+		font-size: 16px;
+		border: 1px solid $primary;
 	}
 }
