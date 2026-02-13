@@ -3,13 +3,13 @@
 	justify-content: space-between;
 	align-items: center;
 	padding: 10px;
-	background-color: $primary-light;
+	background-color: $primary;
 	// .header__name
 	&__name {
 		font-family: $ms-rg;
 		font-size: 20px;
 		color: $text-primary;
-		text-shadow: 1px 2px 2xp $primary-light;
+		text-shadow: 2px 2px 6px $primary-dark;
 	}
 
 	// .header__nav
@@ -18,12 +18,13 @@
 
 	// .header__nav-item
 	&__nav-item {
-		margin: 1px;
+		margin: 2px;
 		padding: 5px 10px;
 		font-family: $rb-rg;
 		font-size: 14px;
-		color: $primary-dark;
-		border: 1px solid $primary-dark;
+		color: $text-icons;
+		border: 1px solid $text-icons;
 		border-radius: 5px;
+		box-shadow: 1px 2px 3px $primary-dark;
 	}
 }

@@ -1,0 +1,67 @@
+.players {
+	padding: 10px 0 0 0;
+	background-color: $text-icons;
+	// .players__list
+	&__list {
+	}
+}
+
+.player {
+	display: flex;
+	align-items: center;
+	// .player__number
+
+	&__number {
+	}
+
+	// .player__desc
+
+	&__desc {
+		width: 100%;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+	}
+
+	// .player__name
+
+	&__name {
+	}
+
+	// .player__status
+
+	&__status {
+		display: flex;
+		align-items: center;
+	}
+
+	// .player__role
+
+	&__role {
+	}
+
+	// .player__foll
+
+	&__foll {
+		display: flex;
+		align-items: center;
+	}
+
+	// .player__foll-name
+
+	&__foll-name {
+	}
+
+	// .player__foll-btn
+
+	&__foll-btn {
+	}
+
+	// .player__foll-count
+
+	&__foll-count {
+		display: block;
+		width: 15px;
+		border: 1px solid $divider;
+	}
+}
