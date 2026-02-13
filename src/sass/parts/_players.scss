@@ -19,13 +19,13 @@
 	&__number {
 		width: 20px;
 		padding: 10px 10px;
-		margin-right: 5px;
+		// margin-right: 5px;
 		font-family: $ms-bd;
 		font-size: 16px;
 		text-align: center;
 		color: $text-icons;
 		// border: 2px solid $primary-dark;
-		border-radius: 5px;
+		border-radius: 5px 0 0 5px;
 		&--default {
 			background-color: $primary;
 			border: 2px solid $primary;
@@ -47,7 +47,7 @@
 		justify-content: space-between;
 		padding: 5px 0;
 		align-items: center;
-		border-radius: 5px;
+		border-radius: 0 5 5px 0;
 		&--default {
 			border: 2px solid $primary;
 		}
