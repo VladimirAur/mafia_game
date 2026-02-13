@@ -3,6 +3,7 @@ import './sass/main.scss';
 function App() {
 	return (
 		<div className="container">
+			<div className="top-line"></div>
 			<div className="header">
 				<h2 className="header__name">Mafia</h2>
 				<nav className="header__nav">
