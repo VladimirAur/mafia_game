@@ -2,20 +2,19 @@
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
-	padding: 10px;
-	background-color: $color-primary;
+	padding: 20px 10px 0px 10px;
+	background-color: $bg-card;
 	// .header__name
 	&__name {
 		font-family: $ms-rg;
 		font-size: 20px;
 		color: $text-primary;
-		text-shadow: 2px 2px 6px $bg-dark;
+		text-shadow: 2px 2px 6px $bg-card;
 	}
 
 	// .header__nav
 	&__nav {
 	}
-
 	// .header__nav-item
 	&__nav-item {
 		margin: 2px;
@@ -23,8 +22,7 @@
 		font-family: $rb-rg;
 		font-size: 14px;
 		color: $text-primary;
-		border: 1px solid $text-primary;
+		background-color: $color-primary;
 		border-radius: 5px;
-		box-shadow: 1px 2px 3px $bg-card;
 	}
 }
