@@ -1,6 +1,14 @@
 import React from 'react'
+import object from "../../bd.json";
 
 const Players = () => {
+    const [players,setPlayers] = React.useState([]);
+
+    React.useEffect(() =>{
+        setPlayers(object.players);
+    },[])  
+    
+    
   return (
     <div className="container">			
 			<div className="header">
