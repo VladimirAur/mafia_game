@@ -3,13 +3,13 @@
 	justify-content: space-between;
 	align-items: center;
 	padding: 10px;
-	background-color: $primary;
+	background-color: $color-primary;
 	// .header__name
 	&__name {
 		font-family: $ms-rg;
 		font-size: 20px;
 		color: $text-primary;
-		text-shadow: 2px 2px 6px $primary-dark;
+		text-shadow: 2px 2px 6px $bg-dark;
 	}
 
 	// .header__nav
@@ -22,9 +22,9 @@
 		padding: 5px 10px;
 		font-family: $rb-rg;
 		font-size: 14px;
-		color: $text-icons;
-		border: 1px solid $text-icons;
+		color: $text-primary;
+		border: 1px solid $text-primary;
 		border-radius: 5px;
-		box-shadow: 1px 2px 3px $primary-dark;
+		box-shadow: 1px 2px 3px $bg-card;
 	}
 }

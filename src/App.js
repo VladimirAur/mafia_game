@@ -15,8 +15,8 @@ function App() {
 			<div className="players">
 				<ul className="players__list">
 					<li className="player">
-						<span className="player__number player__number--default">1</span>
-						<div className="player__desc player__desc--default">
+						<span className="player__number">1</span>
+						<div className="player__desc">
 							<div className="player__name">Молотов</div>
 							<div className="player__status">
 								<div className="player__role">Ж</div>
@@ -30,8 +30,8 @@ function App() {
 						</div>
 					</li>
 					<li className="player">
-						<span className="player__number player__number--black">2</span>
-						<div className="player__desc player__desc--black">
+						<span className="player__number">2</span>
+						<div className="player__desc">
 							<div className="player__name">Алиас</div>
 							<div className="player__status">
 								<div className="player__role">М</div>
@@ -45,8 +45,8 @@ function App() {
 						</div>
 					</li>
 					<li className="player">
-						<span className="player__number player__number--default">3</span>
-						<div className="player__desc player__desc--default">
+						<span className="player__number">3</span>
+						<div className="player__desc">
 							<div className="player__name">Игрокер</div>
 							<div className="player__status">
 								<div className="player__role">Ж</div>
@@ -60,8 +60,8 @@ function App() {
 						</div>
 					</li>
 					<li className="player">
-						<span className="player__number player__number--default">4</span>
-						<div className="player__desc player__desc--default">
+						<span className="player__number">4</span>
+						<div className="player__desc">
 							<div className="player__name">Никитос</div>
 							<div className="player__status">
 								<div className="player__role">Ж</div>
@@ -75,8 +75,8 @@ function App() {
 						</div>
 					</li>
 					<li className="player">
-						<span className="player__number player__number--red">5</span>
-						<div className="player__desc player__desc--red">
+						<span className="player__number">5</span>
+						<div className="player__desc">
 							<div className="player__name">Купер</div>
 							<div className="player__status">
 								<div className="player__role">Ш</div>
@@ -90,8 +90,8 @@ function App() {
 						</div>
 					</li>
 					<li className="player">
-						<span className="player__number player__number--black">6</span>
-						<div className="player__desc player__desc--black">
+						<span className="player__number">6</span>
+						<div className="player__desc">
 							<div className="player__name">Пижон</div>
 							<div className="player__status">
 								<div className="player__role">М</div>
@@ -105,8 +105,8 @@ function App() {
 						</div>
 					</li>
 					<li className="player">
-						<span className="player__number player__number--red">7</span>
-						<div className="player__desc player__desc--red">
+						<span className="player__number">7</span>
+						<div className="player__desc">
 							<div className="player__name">Сантехник</div>
 							<div className="player__status">
 								<div className="player__role">Д</div>
@@ -120,8 +120,8 @@ function App() {
 						</div>
 					</li>
 					<li className="player">
-						<span className="player__number player__number--default">8</span>
-						<div className="player__desc player__desc--default">
+						<span className="player__number">8</span>
+						<div className="player__desc">
 							<div className="player__name">Нейминг</div>
 							<div className="player__status">
 								<div className="player__role">Ж</div>
@@ -135,8 +135,8 @@ function App() {
 						</div>
 					</li>
 					<li className="player player--empty">
-						<span className="player__number player__number--default">9</span>
-						<div className="player__desc player__desc--default">
+						<span className="player__number">9</span>
+						<div className="player__desc">
 							<div className="player__name">Ахилес</div>
 							<div className="player__status">
 								<div className="player__role">Ж</div>
@@ -150,8 +150,8 @@ function App() {
 						</div>
 					</li>
 					<li className="player">
-						<span className="player__number player__number--default">10</span>
-						<div className="player__desc player__desc--default">
+						<span className="player__number">10</span>
+						<div className="player__desc">
 							<div className="player__name">Замод</div>
 							<div className="player__status">
 								<div className="player__role">Ж</div>
