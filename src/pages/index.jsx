@@ -1,6 +1,6 @@
 import Naming from "./Naming";
 import Options from "./Options";
-import Roles from "./Roles";
+import Drawing from "./Drawing";
 import Match from "./Match";
 
-export {Naming, Options, Roles, Match};
+export {Naming, Options, Drawing, Match};
