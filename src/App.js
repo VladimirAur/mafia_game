@@ -1,13 +1,14 @@
-import Header from './components/Header';
-import Players from './components/Players';
+import { Routes, Route } from 'react-router-dom';
+import Options from './pages/Options';
+import Roles from './pages/Roles';
 import './sass/main.scss';
 
 function App() {
 	return (
-		<div className="container">
-			<Header />
-			<Players />
-		</div>
+		<Routes>
+			<Route path="/" element={<Options />} />
+			<Route path="/roles" element={<Roles />} />
+		</Routes>
 	);
 }
 
