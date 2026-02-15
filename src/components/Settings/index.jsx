@@ -1,9 +1,27 @@
-import React from 'react'
+import React from 'react';
+import SettingsItem from './SettingsItem';
+import object from "../../bd.json";
 
 const Settings = () => {
-  return (
-    <div>Settings</div>
-  )
+  const [settings,setSettings] = React.useState([]);  
+  
+
+    React.useEffect(() =>{
+        setSettings(object.settings);
+        
+        
+    },[])  
+    
+    
+  return (    		
+    <div className="players">
+        <ul className="players__list">
+            {
+                settings.map(item => <SettingsItem key={item.id} {...item}/>) 
+            }
+        </ul>
+    </div>
+    )
 }
 
 export default Settings;

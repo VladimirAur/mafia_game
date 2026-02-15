@@ -7,6 +7,8 @@ const Players = () => {
 
     React.useEffect(() =>{
         setPlayers(object.players);
+       
+        
     },[])  
     
     
