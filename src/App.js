@@ -1,14 +1,17 @@
 import { Routes, Route } from 'react-router-dom';
-import Options from './pages/Options';
-import Roles from './pages/Roles';
+import { Naming, Roles, Options, Match } from './pages';
 import './sass/main.scss';
 
 function App() {
 	return (
-		<Routes>
-			<Route path="/" element={<Options />} />
-			<Route path="/roles" element={<Roles />} />
-		</Routes>
+		<div className="container">
+			<Routes>
+				<Route path="/" element={<Options />} />
+				<Route path="/roles" element={<Roles />} />
+				<Route path="/naming" element={<Naming />} />
+				<Route path="/Match" element={<Match />} />
+			</Routes>
+		</div>
 	);
 }
 
