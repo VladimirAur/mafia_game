@@ -4,14 +4,12 @@ import './sass/main.scss';
 
 function App() {
 	return (
-		<div className="container">
-			<Routes>
-				<Route path="/" element={<Options />} />
-				<Route path="/roles" element={<Roles />} />
-				<Route path="/naming" element={<Naming />} />
-				<Route path="/Match" element={<Match />} />
-			</Routes>
-		</div>
+		<Routes>
+			<Route path="/" element={<Options />} />
+			<Route path="/roles" element={<Roles />} />
+			<Route path="/naming" element={<Naming />} />
+			<Route path="/Match" element={<Match />} />
+		</Routes>
 	);
 }
 

@@ -10,9 +10,11 @@ const PlayersItem = ({id, name, role, foll}) => {
                 <div className="player__role">{role}</div>
                 <div className="player__foll">
                     <div className="player__foll-name">Фол</div>
-                    <button className="player__foll-btn player__foll-right">-</button>
+                    <div className="foll__number">
+                        <button className="player__foll-btn player__foll-right">-</button>
                     <input type="text" defaultValue={foll} className="player__foll-count" />
                     <button className="player__foll-btn player__foll-left">+</button>
+                    </div>
                 </div>
             </div>
         </div>
