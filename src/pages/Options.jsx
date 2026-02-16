@@ -1,12 +1,12 @@
 import React from 'react';
 import Header from '../components/Header'
-import Settings from '../components/Settings';
+import Roles from '../components/Roles';
 
 const Options = () => {
   return (
     <div className='container'>
         <Header/>
-        <Settings/>
+        <Roles/>
         
     </div>
   )

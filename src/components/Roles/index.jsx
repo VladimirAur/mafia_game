@@ -1,13 +1,13 @@
 import React from 'react';
-import SettingsItem from './SettingsItem';
+import RolesItem from './RolesItem';
 import object from "../../bd.json";
 
-const Settings = () => {
-  const [settings,setSettings] = React.useState([]);  
+const Roles = () => {
+  const [roles,setRoles] = React.useState([]);  
   
 
     React.useEffect(() =>{
-        setSettings(object.settings);
+        setRoles(object.roles);
         
         
     },[])  
@@ -17,11 +17,11 @@ const Settings = () => {
     <div className="players">
         <ul className="players__list">
             {
-                settings.map(item => <SettingsItem key={item.id} {...item}/>) 
+                roles.map(item => <RolesItem key={item.id} {...item}/>) 
             }
         </ul>
     </div>
     )
 }
 
-export default Settings;
+export default Roles;
