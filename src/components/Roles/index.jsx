@@ -14,8 +14,8 @@ const Roles = () => {
     
     
   return (    		
-    <div className="players">
-        <ul className="players__list">
+    <div className="roles">
+        <ul className="roles__list">
             {
                 roles.map(item => <RolesItem key={item.id} {...item}/>) 
             }

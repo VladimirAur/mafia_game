@@ -1,0 +1,60 @@
+.roles {
+	padding: 10px;
+	// .roles__list
+	&__list {
+	}
+}
+
+.role {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 10px;
+
+	// .role__name
+	&__name {
+		width: 100%;
+		padding: 0 10px;
+		margin-right: 10px;
+		font-family: $rb-rg;
+		font-size: 16px;
+		color: $text-secondary;
+		background-color: $bg-card;
+	}
+
+	// .role__count
+	&__count {
+		display: flex;
+		align-items: center;
+	}
+
+	// .role__btn
+
+	&__btn {
+		font-family: $rb-rg;
+		font-size: 20px;
+		color: $text-primary;
+		background-color: $color-primary;
+	}
+
+	// .role__btn-left
+
+	&__btn-left {
+	}
+
+	// .role__count-number
+
+	&__count-number {
+		display: block;
+		padding: 4px 0 4px 5px;
+		width: 15px;
+		font-size: 16px;
+		color: $text-secondary;
+		background-color: $color-secondary;
+	}
+
+	// .role__btn-right
+
+	&__btn-right {
+	}
+}
