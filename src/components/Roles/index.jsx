@@ -4,6 +4,7 @@ import object from '../../bd.json';
 
 const Roles = () => {
 	const [roles, setRoles] = React.useState([]);
+    const [activePopup, setActivePopup] = React.useState(false);
 
 	React.useEffect(() => {
 		setRoles(object.roles);
@@ -17,8 +18,17 @@ const Roles = () => {
 					<RolesItem key={item.id} {...item} />
 				))}
 			</ul>
-			<button className="roles__add">+ Добавить роль</button>
-
+            {activePopup ? (
+                <div className="roles__popup">
+				<input type="text" placeholder="Роль..." className="role__name" />
+				<button className="roles__add roles__add--small">Добавить</button>
+			</div>            
+            ):
+            (<button className="roles__add">+ Добавить роль</button>)
+        }
+            
+			
+			
 			<button className="roles__start">Начать (10)</button>
 		</div>
 	);

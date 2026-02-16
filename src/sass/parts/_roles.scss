@@ -9,6 +9,11 @@
 	// .roles__list
 	&__list {
 	}
+	// .roles__popup
+	&__popup {
+		display: flex;
+		justify-content: space-between;
+	}
 	// .roles__add
 	&__add {
 		font-family: $rb-rg;
@@ -21,6 +26,18 @@
 		border: 2px solid $color-primary;
 		box-sizing: border-box;
 		border-radius: 10px;
+		&--small {
+			max-width: 164px;
+		}
+		&:hover {
+			border: 2px solid $color-primary;
+		}
+		&:focus {
+			border: 2px solid $color-primary;
+		}
+		&:active {
+			border: none;
+		}
 	}
 	// .roles__start
 	&__start {
@@ -38,6 +55,10 @@
 		background-color: $color-primary;
 		box-sizing: border-box;
 		border-radius: 10px;
+
+		&:active {
+			background-color: $color-secondary;
+		}
 	}
 }
 
@@ -73,6 +94,9 @@
 		font-size: 20px;
 		color: $text-primary;
 		background-color: $bg-number;
+		&:active {
+			background-color: $bg-card;
+		}
 	}
 
 	// .role__btn-left
@@ -109,5 +133,11 @@
 		border-radius: 10px;
 		border: 1px solid $accent;
 		box-sizing: border-box;
+		&:focus {
+			border: 2px solid $accent;
+		}
+		&:active {
+			border: none;
+		}
 	}
 }
