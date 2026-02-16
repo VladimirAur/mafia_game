@@ -14,12 +14,13 @@
 	// .role__name
 	&__name {
 		width: 100%;
-		padding: 0 10px;
+		padding: 15px;
 		margin-right: 10px;
 		font-family: $rb-rg;
 		font-size: 16px;
 		color: $text-secondary;
 		background-color: $bg-card;
+		border-radius: 10px;
 	}
 
 	// .role__count
@@ -32,29 +33,46 @@
 
 	&__btn {
 		font-family: $rb-rg;
+		padding: 12px;
+		height: 49px;
 		font-size: 20px;
 		color: $text-primary;
-		background-color: $color-primary;
+		background-color: $bg-number;
 	}
 
 	// .role__btn-left
 
 	&__btn-left {
+		width: 36px;
+		border-radius: 10px 0 0 10px;
 	}
 
 	// .role__count-number
 
 	&__count-number {
-		display: block;
-		padding: 4px 0 4px 5px;
-		width: 15px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		margin: 0 3px 0 3px;
+		width: 36px;
+		height: 49px;
 		font-size: 16px;
+		font-family: $rb-rg;
 		color: $text-secondary;
-		background-color: $color-secondary;
+		background-color: $bg-card;
 	}
 
 	// .role__btn-right
-
 	&__btn-right {
+		border-radius: 0 10px 10px 0;
+	}
+
+	&__btn-del {
+		margin-left: 5px;
+		width: 45px;
+		color: $accent;
+		border-radius: 10px;
+		border: 1px solid $accent;
+		box-sizing: border-box;
 	}
 }

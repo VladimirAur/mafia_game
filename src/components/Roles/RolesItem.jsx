@@ -8,6 +8,7 @@ const RolesItem = ({ id, name, number }) => {
 				<button className="role__btn role__btn-left">-</button>
 				<div className="role__count-number">{number}</div>
 				<button className="role__btn role__btn-right">+</button>
+                <button className="role__btn role__btn-del">x</button>
 			</div>
 		</li>
 	);
