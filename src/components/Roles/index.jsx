@@ -1,27 +1,27 @@
 import React from 'react';
 import RolesItem from './RolesItem';
-import object from "../../bd.json";
+import object from '../../bd.json';
 
 const Roles = () => {
-  const [roles,setRoles] = React.useState([]);  
-  
+	const [roles, setRoles] = React.useState([]);
 
-    React.useEffect(() =>{
-        setRoles(object.roles);
-        
-        
-    },[])  
-    
-    
-  return (    		
-    <div className="roles">
-        <ul className="roles__list">
-            {
-                roles.map(item => <RolesItem key={item.id} {...item}/>) 
-            }
-        </ul>
-    </div>
-    )
-}
+	React.useEffect(() => {
+		setRoles(object.roles);
+	}, []);
+
+	return (
+		<div className="roles">
+			<h2 className="roles__title"># Настройки игры</h2>
+			<ul className="roles__list">
+				{roles.map((item) => (
+					<RolesItem key={item.id} {...item} />
+				))}
+			</ul>
+			<button className="roles__add">+ Добавить роль</button>
+
+			<button className="roles__start">Начать (10)</button>
+		</div>
+	);
+};
 
 export default Roles;

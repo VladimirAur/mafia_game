@@ -1,7 +1,43 @@
 .roles {
+	// .roles__title
 	padding: 10px;
+	&__title {
+		font-size: 18px;
+		font-family: $ms-bd;
+		color: $text-primary;
+	}
 	// .roles__list
 	&__list {
+	}
+	// .roles__add
+	&__add {
+		font-family: $rb-rg;
+		padding: 12px;
+		height: 49px;
+		width: 100%;
+		font-size: 16px;
+		color: $text-primary;
+		background-color: $bg-number;
+		border: 2px solid $color-primary;
+		box-sizing: border-box;
+		border-radius: 10px;
+	}
+	// .roles__start
+	&__start {
+		position: fixed;
+		bottom: 20px;
+		bottom: calc(20px + env(safe-area-inset-bottom));
+		left: 50%;
+		transform: translateX(-50%);
+		height: 49px;
+		width: 94%;
+		max-width: 480px;
+		font-size: 16px;
+		font-family: $rb-rg;
+		color: $text-primary;
+		background-color: $color-primary;
+		box-sizing: border-box;
+		border-radius: 10px;
 	}
 }
 
@@ -30,7 +66,6 @@
 	}
 
 	// .role__btn
-
 	&__btn {
 		font-family: $rb-rg;
 		padding: 12px;
@@ -42,7 +77,7 @@
 
 	// .role__btn-left
 
-	&__btn-left {
+	&__btn--left {
 		width: 36px;
 		border-radius: 10px 0 0 10px;
 	}
@@ -63,11 +98,11 @@
 	}
 
 	// .role__btn-right
-	&__btn-right {
+	&__btn--right {
 		border-radius: 0 10px 10px 0;
 	}
 
-	&__btn-del {
+	&__btn--del {
 		margin-left: 5px;
 		width: 45px;
 		color: $accent;
