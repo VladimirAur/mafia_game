@@ -22,6 +22,10 @@ const Roles = () => {
         setValue("");
     }
 
+    const removeRole = (indexToRemove) =>{
+        setRoles(prevRoles => prevRoles.filter((_, index) => index !== indexToRemove));
+        
+    }
 
 
 	return (
@@ -29,7 +33,11 @@ const Roles = () => {
 			<h2 className="roles__title"># Настройки игры</h2>
 			<ul className="roles__list">
 				{roles.map((role, index) => (
-					<RolesItem key={index} {...role} />
+					<RolesItem 
+                        key={index} 
+                        role={role} 
+                        index={index} 
+                        removeRole={removeRole}/>
 				))}
 			</ul>
             {adding ? (
