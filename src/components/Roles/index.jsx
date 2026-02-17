@@ -22,8 +22,7 @@ const Roles = () => {
         setValue(name);
     }
 
-	const addNewRole = (value) => {
-        
+	const addNewRole = (value) => {        
 		const existing = roles.find(role => role.name === value);
         let updatedRoles;
 
@@ -40,6 +39,24 @@ const Roles = () => {
 		setValue('');
         
 	};
+
+    const incRoleNumber = (index) => {
+        setRoles(prevRoles =>
+            prevRoles.map(role => role.id === index
+                ? { ...role, number: role.number - 1 }
+                : role
+            )
+        )
+    }
+
+    const decRoleNumber = (index) => {
+        setRoles(prevRoles =>
+            prevRoles.map(role => role.id === index
+                ? { ...role, number: role.number + 1 }
+                : role
+            )
+        )
+    }
 
 	const resetRole = (index) => {
 		setRoles((prevRoles) =>
@@ -62,7 +79,9 @@ const Roles = () => {
                         key={role.name} 
                         role={role} 
                         id={role.id} 
-                        resetRole={resetRole} />
+                        resetRole={resetRole} 
+                        incRoleNumber={incRoleNumber}
+                        decRoleNumber={decRoleNumber}/>
 				))}
 			</ul>
 			{adding ? (
