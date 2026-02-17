@@ -10,7 +10,12 @@ const Roles = () => {
 	const [value, setValue] = React.useState();
 
 	React.useEffect(() => {
-		setRoles(object.roles);
+        const rolesArray = object.roles.map(role => ({
+            ...role,
+            id: crypto.randomUUID() 
+        }))
+
+		setRoles(rolesArray);
 	}, []);
 
     const chooseRole = (name) => {
@@ -35,29 +40,27 @@ const Roles = () => {
         
 	};
 
-	const resetRole = (nameToReset) => {
+	const resetRole = (index) => {
 		setRoles((prevRoles) =>
 			prevRoles.map(
 				(role) =>
-					role.name === nameToReset
+					role.id === index
 						? { ...role, number: 0 }
 						: role, 
 			),
 		);
 	};
 
-    
-    
 
 	return (
 		<div className="roles">
 			<h2 className="roles__title"># Настройки игры</h2>
 			<ul className="roles__list">
-				{roles.filter(role => role.number > 0).map((role, index) => (
+				{roles.filter(role => role.number > 0).map((role) => (
 					<RolesItem 
                         key={role.name} 
                         role={role} 
-                        index={index} 
+                        id={role.id} 
                         resetRole={resetRole} />
 				))}
 			</ul>
