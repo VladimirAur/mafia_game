@@ -21,19 +21,21 @@ const Roles = () => {
 			</ul>
             {adding ? (
                 <div className="roles__popup">
-                    <div className="roles__select">
+                    <div className={`roles__select ${isFocused ? "roles__select--focus" : ""}`}>
                         <input 
                             type="text"
                             placeholder="Роль..." 
-                            className="role__name" 
+                            className={`role__name ${isFocused ? "role__name--modbrt" : ""}`} 
                             onFocus={() => setIsFocused(!isFocused)}
                             onBlur={() => setIsFocused(false)} 
                         /> 
-                        <ul className="roles__list">
-                            <li className="role__name">Бессмертный</li>
-                            <li className="role__name">Доктор</li>
-                            <li className="role__name">Помошник</li>
-                        </ul>
+                        {isFocused && (
+                            <ul className="roles__list">
+                                <li className="role__name role__name--modbrb">Бессмертный</li>
+                                <li className="role__name role__name--modbrb">Доктор</li>
+                                <li className="role__name role__name--modbrb">Помошник</li>
+                            </ul>)}
+                        
                     </div>
 				                
 				<button className="roles__add roles__add--small" onClick={()=> setAdding(!adding)}>Добавить</button>
