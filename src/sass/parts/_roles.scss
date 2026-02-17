@@ -69,6 +69,7 @@
 	// .roles__start
 	&__start {
 		position: fixed;
+		display: inline-block;
 		bottom: 20px;
 		bottom: calc(20px + env(safe-area-inset-bottom));
 		left: 50%;
@@ -76,6 +77,8 @@
 		height: 49px;
 		width: 94%;
 		max-width: 480px;
+		text-align: center;
+		line-height: 49px;
 		font-size: 16px;
 		font-family: $rb-rg;
 		color: $text-primary;

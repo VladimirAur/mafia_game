@@ -1,8 +1,14 @@
-import React from 'react'
+import React from 'react';
+import Header from '../components/Header';
+import Names from '../components/Names';
 
-const Naming = () => {
+const Naming = () => { 
+  
   return (
-    <div>Naming</div>
+    <div className='container'>
+        <Header/>
+        <Names/>     
+    </div>
   )
 }
 

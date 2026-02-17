@@ -1,14 +1,18 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
+import { useAppContext } from '../../App';
 import RolesItem from './RolesItem';
 import object from '../../bd.json';
 import RolesSelectItem from './RolesSelectItem';
+
 
 const Roles = () => {
 	const [roles, setRoles] = React.useState([]);
 	const [adding, setAdding] = React.useState(false);
 	const [isFocused, setIsFocused] = React.useState(false);
 	const [value, setValue] = React.useState("");
-	const [namesArray, setNamesArray] = React.useState([]);
+	const {namesArray, setNamesArray} = useAppContext();
+	
 
 	React.useEffect(() => {
         const rolesArray = object.roles.map(role => ({
@@ -79,7 +83,7 @@ const Roles = () => {
 		);
 	};
   
-    
+   	
 	return (
 		<div className="roles">
 			<h2 className="roles__title"># Настройки игры</h2>
@@ -135,7 +139,7 @@ const Roles = () => {
 				</button>
 			)}
 
-			<button className="roles__start">Начать ({namesArray.length})</button>
+			<Link to="/naming" className="roles__start">Начать ({namesArray.length})</Link>
 		</div>
 	);
 };
