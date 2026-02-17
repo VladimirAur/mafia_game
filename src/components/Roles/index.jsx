@@ -8,6 +8,7 @@ const Roles = () => {
 	const [adding, setAdding] = React.useState(false);
 	const [isFocused, setIsFocused] = React.useState(false);
 	const [value, setValue] = React.useState("");
+	const [namesArray, setNamesArray] = React.useState([]);
 
 	React.useEffect(() => {
         const rolesArray = object.roles.map(role => ({
@@ -17,6 +18,15 @@ const Roles = () => {
 
 		setRoles(rolesArray);
 	}, []);
+
+	React.useEffect(() => {
+		const names = roles
+			.filter(role => role.number > 0)
+			.flatMap(role => Array(role.number).fill(role.name))
+			.sort(() => Math.random() - 0.5);
+
+		setNamesArray(names);
+	}, [roles]);
 
     const chooseRole = (name) => {
         setValue(name);
@@ -68,10 +78,8 @@ const Roles = () => {
 			),
 		);
 	};
-
-       
+  
     
-
 	return (
 		<div className="roles">
 			<h2 className="roles__title"># Настройки игры</h2>
@@ -109,7 +117,7 @@ const Roles = () => {
                                         name={role.name} 
                                         index={index} 
                                         chooseRole={chooseRole}
-                                         />
+                                    />
                                 ))}								
 							</ul>
 						)}
@@ -127,7 +135,7 @@ const Roles = () => {
 				</button>
 			)}
 
-			<button className="roles__start">Начать (10)</button>
+			<button className="roles__start">Начать ({namesArray.length})</button>
 		</div>
 	);
 };
