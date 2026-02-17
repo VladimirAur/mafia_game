@@ -1,6 +1,6 @@
 import React from 'react';
 
-const RolesItem = ({ id, name, number }) => {
+const RolesItem = ({ name, number }) => {
 	return (
 		<li className="role">
 			<div className="role__name">{name}</div>
