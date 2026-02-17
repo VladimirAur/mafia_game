@@ -21,28 +21,27 @@ const Roles = () => {
 			</ul>
             {adding ? (
                 <div className="roles__popup">
-				<input 
-                    type="text"
-                    placeholder="Роль..." 
-                    className="role__name" 
-                    onFocus={() => setIsFocused(!isFocused)}
-                    onBlur={() => setIsFocused(false)} 
-                />                 
+                    <div className="roles__select">
+                        <input 
+                            type="text"
+                            placeholder="Роль..." 
+                            className="role__name" 
+                            onFocus={() => setIsFocused(!isFocused)}
+                            onBlur={() => setIsFocused(false)} 
+                        /> 
+                        <ul className="roles__list">
+                            <li className="role__name">Бессмертный</li>
+                            <li className="role__name">Доктор</li>
+                            <li className="role__name">Помошник</li>
+                        </ul>
+                    </div>
+				                
 				<button className="roles__add roles__add--small" onClick={()=> setAdding(!adding)}>Добавить</button>
                 </div>            
                 ):
                 (<button className="roles__add" onClick={()=> setAdding(!adding)}>+ Добавить роль</button>)
             }
-            {isFocused && (
-                <ul className="roles__list">
-				{roles.map((item) => (
-					<RolesItem key={item.id} {...item} />
-				))}
-                </ul>
-                )
-
-            }
-			
+            
 			
 			<button className="roles__start">Начать (10)</button>
 		</div>

@@ -6,14 +6,21 @@
 		font-family: $ms-bd;
 		color: $text-primary;
 	}
-	// .roles__list
-	&__list {
-	}
 	// .roles__popup
 	&__popup {
 		display: flex;
-		justify-content: space-between;
 	}
+	// .roles____select
+	&__select {
+		width: 100%;
+		margin-right: 10px;
+		box-sizing: border-box;
+	}
+	// .roles__list
+	&__list {
+		width: 100%;
+	}
+
 	// .roles__add
 	&__add {
 		font-family: $rb-rg;
@@ -78,6 +85,7 @@
 		color: $text-secondary;
 		background-color: $bg-card;
 		border-radius: 10px;
+		box-sizing: border-box;
 	}
 
 	// .role__count
