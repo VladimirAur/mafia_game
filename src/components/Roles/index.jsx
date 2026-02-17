@@ -7,7 +7,7 @@ const Roles = () => {
 	const [roles, setRoles] = React.useState([]);
 	const [adding, setAdding] = React.useState(false);
 	const [isFocused, setIsFocused] = React.useState(false);
-	const [value, setValue] = React.useState();
+	const [value, setValue] = React.useState("");
 
 	React.useEffect(() => {
         const rolesArray = object.roles.map(role => ({
@@ -23,6 +23,7 @@ const Roles = () => {
     }
 
 	const addNewRole = (value) => {
+        
 		const existing = roles.find(role => role.name === value);
         let updatedRoles;
 
@@ -92,7 +93,10 @@ const Roles = () => {
 							</ul>
 						)}
 					</div>
-					<button className="roles__add roles__add--small" onClick={() => addNewRole(value)}>
+					<button 
+                        className="roles__add roles__add--small" 
+                        onClick={() => addNewRole(value)}
+                        disabled={!value.trim()}>
 						Добавить
 					</button>
 				</div>
