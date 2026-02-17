@@ -1,6 +1,7 @@
 import React from 'react';
 import RolesItem from './RolesItem';
 import object from '../../bd.json';
+import RolesSelectItem from './RolesSelectItem';
 
 const Roles = () => {
 	const [roles, setRoles] = React.useState([]);
@@ -12,33 +13,52 @@ const Roles = () => {
 		setRoles(object.roles);
 	}, []);
 
+    const chooseRole = (name) => {
+        setValue(name);
+    }
+
 	const addNewRole = (value) => {
-		const newRole = {
-			name: value,
-			number: 1,
-		};
-		setRoles((prevRoles) => [...prevRoles, newRole]);
+		const existing = roles.find(role => role.name === value);
+        let updatedRoles;
+
+        if (existing){
+            updatedRoles = roles.map(role => role.name === value
+            ? {...role, number:1}
+            : role)
+        }else{
+            updatedRoles = [...roles, { name: value, number: 1 }];
+        }
+
+        setRoles(updatedRoles);
 		setAdding(false);
 		setValue('');
+        
 	};
 
-	const resetRole = (indexToReset) => {
+	const resetRole = (nameToReset) => {
 		setRoles((prevRoles) =>
 			prevRoles.map(
-				(role, index) =>
-					index === indexToReset
+				(role) =>
+					role.name === nameToReset
 						? { ...role, number: 0 }
 						: role, 
 			),
 		);
 	};
 
+    
+    
+
 	return (
 		<div className="roles">
 			<h2 className="roles__title"># Настройки игры</h2>
 			<ul className="roles__list">
-				{roles.map((role, index) => (
-					<RolesItem key={index} role={role} index={index} resetRole={resetRole} />
+				{roles.filter(role => role.number > 0).map((role, index) => (
+					<RolesItem 
+                        key={role.name} 
+                        role={role} 
+                        index={index} 
+                        resetRole={resetRole} />
 				))}
 			</ul>
 			{adding ? (
@@ -58,18 +78,14 @@ const Roles = () => {
 						</span>
 						{isFocused && (
 							<ul className="roles__list">
-								<li
-									className="role__name role__name--modbrb"
-									onMouseDown={() => setValue('Бессмертный')}
-								>
-									Бессмертный
-								</li>
-								<li className="role__name role__name--modbrb" onMouseDown={() => setValue('Доктор')}>
-									Доктор
-								</li>
-								<li className="role__name role__name--modbrb" onMouseDown={() => setValue('Помошник')}>
-									Помошник
-								</li>
+                                {roles.filter(role => role.number === 0).map((role, index) => (
+                                    <RolesSelectItem 
+                                        key={index} 
+                                        name={role.name} 
+                                        index={index} 
+                                        chooseRole={chooseRole}
+                                         />
+                                ))}								
 							</ul>
 						)}
 					</div>
