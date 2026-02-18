@@ -32,14 +32,19 @@
 
 	// .player__desc
 	&__desc {
-		width: 100%;
 		display: flex;
 		justify-content: space-between;
+		width: 100%;
+		min-height: 49px;
 		padding: 10px 0;
 		align-items: center;
 		background-color: $bg-card;
 		z-index: 0;
 		border-radius: 0 5px 5px 0;
+		box-sizing: border-box;
+		&--mod {
+			border-radius: 0;
+		}
 	}
 
 	// .player__name
@@ -49,6 +54,16 @@
 		font-family: $rb-rg;
 		font-size: 16px;
 		color: $text-secondary;
+	}
+	&__input {
+		display: inline-block;
+		padding-left: 10px;
+		margin-right: 20px;
+		width: 100%;
+		font-family: $rb-rg;
+		font-size: 16px;
+		color: $text-primary;
+		background-color: $bg-card;
 	}
 
 	// .player__status

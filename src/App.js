@@ -7,11 +7,11 @@ export const AppContext = React.createContext();
 export const useAppContext = () => React.useContext(AppContext);
 
 function App() {
-	const [namesArray, setNamesArray] = React.useState([]);
+	const [rolesNames, setRolesNames] = React.useState([]);
 	const [players, setPlayers] = React.useState([]);
 
 	return (
-		<AppContext.Provider value={{ namesArray, setNamesArray, players, setPlayers }}>
+		<AppContext.Provider value={{ rolesNames, setRolesNames, players, setPlayers }}>
 			<Routes>
 				<Route path="/" element={<Options />} />
 				<Route path="/drawing" element={<Drawing />} />

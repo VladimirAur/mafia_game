@@ -1,6 +1,6 @@
 import React from 'react';
 
-const RolesSelectItem = ({index, name, chooseRole}) => {
+const RolesSelectItem = ({name, chooseRole}) => {
 	return (
 		<li 
         className="role__name role__name--modbrb" 

@@ -1,13 +1,18 @@
 import React from 'react';
 import { useAppContext } from '../../App';
+import NamesItem from "./NamesItem"
 
 const Names = () => {
-    const {namesArray, players, setPlayers} = useAppContext();
+    const {rolesNames, players, setPlayers} = useAppContext();
 
     React.useEffect(() => {
-      const playersArray = namesArray.map(name => ({
+      const playersArray = rolesNames.map(name => ({
+        id: crypto.randomUUID(),
         role: name,
-        id: crypto.randomUUID()         
+        nickname: "",
+        foll: 0,
+        marker: 0 
+              
       }))
       setPlayers(playersArray);
     },[])
@@ -16,7 +21,14 @@ const Names = () => {
     
 
   return (
-    <div>Names</div>
+    <div className="players">
+      <h2 className="roles__title">% Имена Игроков</h2>
+        <ul className="players__list">
+            {
+                players.map((item, index) => <NamesItem key={item.id} index={index}/>) 
+            }
+        </ul>
+    </div>
   )
 }
 

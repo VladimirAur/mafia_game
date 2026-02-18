@@ -1,8 +1,29 @@
-import React from 'react'
+import React from 'react';
+import { useAppContext } from '../../App';
 
-const NamesItem = () => {
+const NamesItem = ({index}) => {
+  const {players, setPlayers} = useAppContext();
+  const [inFocus, setInFocus] = React.useState(false);
+  const [value, setValue] = React.useState("");
+  
+
   return (
-    <div>NamesItem</div>
+    <li className="player">
+        <span className="player__number">{index+1}</span>
+        <div className="player__desc player__desc--mod">
+          <input
+							type="text"
+							value={value}
+							placeholder="Имя..."
+							className="player__input"
+							onFocus={() => setInFocus(true)}
+							onBlur={() => setInFocus(false)}
+							onChange={(e) => setValue(e.target.value)}
+						/>            
+        </div>
+        {inFocus && (<button className="role__btn role__btn--mod">Hello</button>)}
+        
+    </li>
   )
 }
 

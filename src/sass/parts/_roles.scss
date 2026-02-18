@@ -133,6 +133,9 @@
 		font-size: 20px;
 		color: $text-primary;
 		background-color: $bg-number;
+		&--mod {
+			border-radius: 0 5px 5px 0;
+		}
 		&:active {
 			background-color: $bg-card;
 		}
