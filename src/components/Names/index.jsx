@@ -4,6 +4,7 @@ import NamesItem from "./NamesItem"
 
 const Names = () => {
     const {rolesNames, players, setPlayers} = useAppContext();
+    
 
     React.useEffect(() => {
       const playersArray = rolesNames.map(name => ({
@@ -17,7 +18,7 @@ const Names = () => {
       setPlayers(playersArray);
     },[])
 
-    console.log(players);
+    console.log("Hello");
     
 
   return (
@@ -30,6 +31,7 @@ const Names = () => {
         </ul>
     </div>
   )
+  
 }
 
 export default Names;

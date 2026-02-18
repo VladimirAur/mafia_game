@@ -15,15 +15,20 @@ const Roles = () => {
 	
 
 	React.useEffect(() => {
+        
         const rolesArray = object.roles.map(role => ({
             ...role,
             id: crypto.randomUUID() 
         }))
 
 		setRoles(rolesArray);
+
+        
 	}, []);
 
+        
 	React.useEffect(() => {
+        
 		const names = roles
 			.filter(role => role.number > 0)
 			.flatMap(role => Array(role.number).fill(role.name))
@@ -83,6 +88,8 @@ const Roles = () => {
 		);
 	};
   
+    
+    
    	
 	return (
 		<div className="roles">
