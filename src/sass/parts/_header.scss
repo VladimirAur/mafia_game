@@ -11,18 +11,4 @@
 		color: $text-primary;
 		text-shadow: 2px 2px 6px $bg-card;
 	}
-
-	// .header__nav
-	&__nav {
-	}
-	// .header__nav-item
-	&__nav-item {
-		margin: 2px;
-		padding: 5px 10px;
-		font-family: $rb-rg;
-		font-size: 14px;
-		color: $text-primary;
-		background-color: $color-primary;
-		border-radius: 5px;
-	}
 }
