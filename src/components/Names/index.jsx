@@ -18,15 +18,14 @@ const Names = () => {
       setPlayers(playersArray);
     },[])
 
-    console.log("Hello");
-    
+        
 
   return (
     <div className="players">
       <h2 className="roles__title">% Имена Игроков</h2>
         <ul className="players__list">
             {
-                players.map((item, index) => <NamesItem key={item.id} index={index}/>) 
+                players.map((item, index) => <NamesItem key={item.id} index={index} id={item.id} />) 
             }
         </ul>
     </div>

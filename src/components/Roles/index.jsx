@@ -11,7 +11,7 @@ const Roles = () => {
 	const [adding, setAdding] = React.useState(false);
 	const [isFocused, setIsFocused] = React.useState(false);
 	const [value, setValue] = React.useState("");
-	const {rolesNames, setRolesNames} = useAppContext();
+	const {rolesNames, setRolesNames, setPlayers} = useAppContext();
 	
 
 	React.useEffect(() => {
@@ -21,20 +21,20 @@ const Roles = () => {
             id: crypto.randomUUID() 
         }))
 
-		setRoles(rolesArray);
-
-        
+		setRoles(rolesArray);        
 	}, []);
 
         
-	React.useEffect(() => {
-        
+	React.useEffect(() => {        
 		const names = roles
 			.filter(role => role.number > 0)
 			.flatMap(role => Array(role.number).fill(role.name))
 			.sort(() => Math.random() - 0.5);
+            
 
 		setRolesNames(names);
+        
+
 	}, [roles]);
 
     const chooseRole = (name) => {
@@ -87,9 +87,18 @@ const Roles = () => {
 			),
 		);
 	};
-  
     
-    
+    const buildPlayers = () => {
+        const playersArray = rolesNames.map(name => ({
+        id: crypto.randomUUID(),
+        role: name,
+        nickname: "",
+        foll: 0,
+        marker: 0 
+              
+      }))
+      setPlayers(playersArray);
+    }
    	
 	return (
 		<div className="roles">
@@ -146,7 +155,7 @@ const Roles = () => {
 				</button>
 			)}
 
-			<Link to="/naming" className="roles__start">Начать ({rolesNames.length})</Link>
+			<Link to="/naming" className="roles__start" onClick={() => buildPlayers()}>Начать ({rolesNames.length})</Link>
 		</div>
 	);
 };

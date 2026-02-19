@@ -1,16 +1,17 @@
 import React from 'react';
 import { useAppContext } from '../../App';
 
-const NamesItem = ({index}) => {
+const NamesItem = (index, id) => {
   const {players, setPlayers} = useAppContext();
   const [inFocus, setInFocus] = React.useState(false);
   const [value, setValue] = React.useState("");
 
   const addNickname = (value) => {
-
+    setPlayers(...players, value);
   }  
-
-
+ 
+ 
+ 
 
   return (
     <li className="player">
