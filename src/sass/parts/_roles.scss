@@ -88,6 +88,14 @@
 		&:active {
 			background-color: $color-secondary;
 		}
+		&--disabled {
+			opacity: 0.5;
+
+			&:active {
+				background-color: $color-primary;
+				opacity: 0.5;
+			}
+		}
 	}
 }
 

@@ -155,7 +155,7 @@ const Roles = () => {
 				</button>
 			)}
 
-			<Link to="/naming" className="roles__start" onClick={() => buildPlayers()}>Начать ({rolesNames.length})</Link>
+			<Link to="/naming" className="roles__start" onClick={() => buildPlayers()}>Далее ({rolesNames.length})</Link>
 		</div>
 	);
 };

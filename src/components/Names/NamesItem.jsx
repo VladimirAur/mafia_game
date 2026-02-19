@@ -1,16 +1,20 @@
 import React from 'react';
 import { useAppContext } from '../../App';
 
-const NamesItem = (index, id) => {
-  const {players, setPlayers} = useAppContext();
+const NamesItem = ({index, id}) => {
+  const {setPlayers} = useAppContext();
   const [inFocus, setInFocus] = React.useState(false);
   const [value, setValue] = React.useState("");
 
   const addNickname = (value) => {
-    setPlayers(...players, value);
-  }  
- 
- 
+  setPlayers(prev =>
+    prev.map(player =>
+      player.id === id
+        ? { ...player, nickname: value }
+        : player
+    )
+  );
+};
  
 
   return (
@@ -29,7 +33,7 @@ const NamesItem = (index, id) => {
         </div>
         {inFocus && (<button 
                     className="role__btn role__btn--mod"
-                    onClick={() => addNickname(value)}
+                    onMouseDown={() => addNickname(value)}
                     disabled={!value.trim()}>Готово</button>)}
         
     </li>
