@@ -2,19 +2,23 @@ import React from 'react';
 import { useAppContext } from '../../App';
 
 const NamesItem = ({index, id}) => {
-  const {setPlayers} = useAppContext();
+  const {players,setPlayers} = useAppContext();
   const [inFocus, setInFocus] = React.useState(false);
-  const [value, setValue] = React.useState("");
 
-  const addNickname = (value) => {
-  setPlayers(prev =>
-    prev.map(player =>
-      player.id === id
-        ? { ...player, nickname: value }
-        : player
-    )
-  );
-};
+
+ const player = players.find(p => p.id === id);
+
+  const handleChange = (e) => {
+    const newValue = e.target.value;
+
+    setPlayers(prev =>
+      prev.map(p =>
+        p.id === id
+          ? { ...p, nickname: newValue }
+          : p
+      )
+    );
+  };
  
 
   return (
@@ -23,18 +27,17 @@ const NamesItem = ({index, id}) => {
         <div className="player__desc player__desc--mod">
           <input
                 type="text"
-                value={value}
+                value={player?.nickname || ""}
                 placeholder="Имя..."
                 className="player__input"
                 onFocus={() => setInFocus(true)}
                 onBlur={() => setInFocus(false)}
-                onChange={(e) => setValue(e.target.value)}
+                onChange={handleChange}
             />            
         </div>
         {inFocus && (<button 
-                    className="role__btn role__btn--mod"
-                    onMouseDown={() => addNickname(value)}
-                    disabled={!value.trim()}>Готово</button>)}
+                    className="role__btn role__btn--mod"                    
+                    >Готово</button>)}
         
     </li>
   )
