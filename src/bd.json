@@ -64,35 +64,43 @@
 	"roles": [
 		{
 			"name": "Мафия",
-			"number": 2
+			"number": 2,
+            "img": "../assets/img/chelovek_siluet_dym_121937_168x300.jpg"
 		},
 		{
 			"name": "Житель",
-			"number": 6
+			"number": 6,
+            "img": "../assets/img/astronavt_portal_neon_141352_168x300.jpg"
 		},
 		{
 			"name": "Дон",
-			"number": 1
+			"number": 1,
+            "img": "../assets/img/volk_siluet_luna_118727_168x300.jpg"
 		},
 		{
 			"name": "Шериф",
-			"number": 1
+			"number": 1,
+            "img": "../assets/img/luna_derevo_zvezdnoe_nebo_132139_168x300.jpg"
 		},
         {
 			"name": "Любовница",
-			"number": 0
+			"number": 0,
+            "img": "../assets/img/listia_liniia_neon_139772_168x300.jpg"
 		},
         {
 			"name": "Маньяк",
-			"number": 0
+			"number": 0,
+            "img": "../assets/img/doroga_zakat_gorizont_118582_168x300.jpg"
 		},
         {
 			"name": "Гомночист",
-			"number": 0
+			"number": 0,
+            "img": "../assets/img/doroga_razmetka_pasmurno_124093_168x300.jpg"
 		},
         {
 			"name": "Хакер",
-			"number": 0
+			"number": 0,
+            "img": "../assets/img/zvezdnoe_nebo_mlechnyj_put_noch_124665_168x300.jpg"
 		}
 	]
 }
