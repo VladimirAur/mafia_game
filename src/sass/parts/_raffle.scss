@@ -1,8 +1,70 @@
 .raffle {
-	position: relative;
-	height: 100vh;
-	width: 100%;
-	background-position: center;
-	background-size: cover;
-	background-repeat: no-repeat;
+	// .raffle__item
+	&__item {
+		display: none;
+		flex-direction: column;
+		justify-content: space-between;
+		align-items: center;
+		position: relative;
+		height: auto;
+		min-height: 100vh;
+		width: 100%;
+		padding: 20px 0;
+		color: #fff;
+		font-size: 30px;
+		background-position: center;
+		background-size: cover;
+		background-repeat: no-repeat;
+		&--active {
+			display: flex;
+		}
+	}
+	// .raffle__btn-prev
+	&__btn-prev {
+		position: absolute;
+	}
+
+	// .raffle__top
+
+	&__top {
+	}
+
+	// .raffle__title
+	&__title {
+		position: relative;
+		display: inline-block;
+		&::after {
+			content: '';
+			position: absolute;
+			left: -5px;
+			right: -5px;
+			bottom: 0;
+			height: 2px;
+			background: linear-gradient(to right, transparent, $accent, transparent); /* сужение к краям */
+			border-radius: 1px;
+		}
+	}
+
+	// .raffle__player-name
+
+	&__player-name {
+	}
+
+	// .raffle__bottom
+
+	&__bottom {
+	}
+
+	// .raffle__player-role
+
+	&__player-role {
+		text-align: center;
+	}
+
+	// .raffle__btn-next
+
+	&__btn-next {
+		color: #fff;
+		font-size: 30px;
+	}
 }
