@@ -6,8 +6,8 @@ import { useNavigate } from 'react-router-dom';
 const Names = () => {
 	const { players } = useAppContext();
 	const navigate = useNavigate();
-	const allFilled = true;
-    // players.every((player) => player.nickname?.trim());
+	const allFilled = players.every((player) => player.nickname?.trim());
+    
 
 	return (
 		<div className="players">
