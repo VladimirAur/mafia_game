@@ -89,14 +89,16 @@ const Roles = () => {
 	};
     
     const buildPlayers = () => {
-        const playersArray = rolesNames.map(name => {
+        const playersArray = rolesNames.map((name, index) => {
         
         const roleFromJson = object.roles.find(
         role => role.name === name
         );
 
+		
         return {
         id: crypto.randomUUID(),
+		number: index + 1,
         role: name,
         nickname: "",
         foll: 0,

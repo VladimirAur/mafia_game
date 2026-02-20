@@ -13,8 +13,8 @@ const Names = () => {
 		<div className="players">
 			<h2 className="roles__title">% Имена Игроков</h2>
 			<ul className="players__list">
-				{players.map((item, index) => (
-					<NamesItem key={item.id} index={index} id={item.id} />
+				{players.map((item) => (
+					<NamesItem key={item.id} number={item.number} id={item.id} />
 				))}
 			</ul>
 			<button

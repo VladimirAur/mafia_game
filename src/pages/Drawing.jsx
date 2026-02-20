@@ -1,12 +1,14 @@
 import React from 'react';
-import mafiaImg from '../assets/img/chelovek_siluet_dym_121937_168x300.jpg'
+import Raffle from '../components/Raffle';
+
 
 
 const Drawing = () => {
   return (
     <div className="container">
-        <div className="drawing" style={{ backgroundImage: `url(${mafiaImg})` }}></div>
+      <Raffle/>
     </div>
+    
     
   )
 }

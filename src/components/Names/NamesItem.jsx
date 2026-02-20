@@ -1,7 +1,7 @@
 import React from 'react';
 import { useAppContext } from '../../App';
 
-const NamesItem = ({index, id}) => {
+const NamesItem = ({number, id}) => {
   const {players,setPlayers} = useAppContext();
   const [inFocus, setInFocus] = React.useState(false);
 
@@ -23,7 +23,7 @@ const NamesItem = ({index, id}) => {
 
   return (
     <li className="player">
-        <span className="player__number">{index+1}</span>
+        <span className="player__number">{number}</span>
         <div className="player__desc player__desc--mod">
           <input
                 type="text"
