@@ -41,6 +41,8 @@ const Players = () => {
 		);
 	};
 
+    
+
 	return (
 		<div className="players">
 			<ul className="players__list">

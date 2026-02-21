@@ -1,4 +1,5 @@
 .players {
+	position: relative;
 	padding: 10px;
 	// background-color: #f8fafa;
 	// .players__list
@@ -7,10 +8,11 @@
 }
 
 .player {
+	position: relative;
 	display: flex;
 	align-items: center;
 	margin-bottom: 10px;
-	&--empty {
+	&--disabled {
 		opacity: 0.5;
 	}
 	&:last-child {
@@ -19,9 +21,10 @@
 
 	// .player__number
 	&__number {
+		position: relative;
 		width: 25px;
 		padding: 15px 15px;
-		margin-right: -2px;
+		// margin-right: -2px;
 		font-family: $ms-bd;
 		font-size: 16px;
 		text-align: center;
@@ -29,11 +32,15 @@
 		background-color: $bg-number;
 		box-shadow: 1px 1px 2px #000;
 		border-radius: 5px;
-		z-index: 1;
+		z-index: 10;
+		&--disabled {
+			pointer-events: none;
+		}
 	}
 
 	// .player__desc
 	&__desc {
+		position: relative;
 		display: flex;
 		justify-content: space-between;
 		width: 100%;

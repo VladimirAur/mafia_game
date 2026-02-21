@@ -1,11 +1,14 @@
 import React from 'react';
 
-const PlayersItem = ({ id, number, nickname, role, foul, addFoul, removeFoul }) => {
+const PlayersItem = ({ id, number, nickname, role, foul, addFoul, removeFoul, ban }) => {
+    
     
 
 	return (
-		<li className="player">
-			<span className="player__number">{number}</span>
+		<li className={`player ${ban ? "player--disabled" : ""}`} >
+			<span 
+                className={`player__number ${ban ? "player__number--disabled":""}`}
+                >{number}</span>
 			<div className="player__desc">
 				<div className="player__name">{nickname}</div>
 				{/* <div className="player__status">
@@ -20,7 +23,8 @@ const PlayersItem = ({ id, number, nickname, role, foul, addFoul, removeFoul }) 
 					<input 
                     type="text" 
                     value={foul > 0 ? foul : "Ф"} 
-                    className="player__foll-number" />
+                    className="player__foll-number"
+                    readOnly />
 					<button 
                     className="player__foll-btn player__foll-right"
                     onClick={() => addFoul(id)}>+</button>
