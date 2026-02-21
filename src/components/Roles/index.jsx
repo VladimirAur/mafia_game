@@ -101,7 +101,8 @@ const Roles = () => {
 		number: index + 1,
         role: name,
         nickname: "",
-        foll: 0,
+        foul: 0,
+        ban: false,
         marker: 0,
         img: roleFromJson ? roleFromJson.img : null  
         }

@@ -1,8 +1,7 @@
 import React from 'react';
 
-const PlayersItem = ({ number, nickname, role, foll }) => {
-
-
+const PlayersItem = ({ id, number, nickname, role, foul, addFoul, removeFoul }) => {
+    
 
 	return (
 		<li className="player">
@@ -15,12 +14,16 @@ const PlayersItem = ({ number, nickname, role, foll }) => {
 			</div>
 			<div className="player__foll">
 				<div className="player__foll-count">
-					<button className="player__foll-btn player__foll-left">-</button>
+					<button 
+                    className="player__foll-btn player__foll-left"
+                    onClick={() => removeFoul(id)}>-</button>
 					<input 
                     type="text" 
-                    value={foll > 0 ? foll : "Ф"} 
+                    value={foul > 0 ? foul : "Ф"} 
                     className="player__foll-number" />
-					<button className="player__foll-btn player__foll-right">+</button>
+					<button 
+                    className="player__foll-btn player__foll-right"
+                    onClick={() => addFoul(id)}>+</button>
 				</div>
 			</div>
 		</li>
