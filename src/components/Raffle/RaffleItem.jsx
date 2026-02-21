@@ -6,11 +6,11 @@ const RaffleItem = ({img, role, number, active, nickname, isLast, onNext, onPrev
 
 
   return (
-    <div className={`raffle__item ${active ? "raffle__item--active" : ""}`}
-        style={{ backgroundImage: `url(${img})`}}>
+    <div className={`raffle__item ${active ? "raffle__item--active" : ""}`}>
+        <img className='raffle__img' src={img} alt="Фон" />    
         <button className="raffle__btn-prev" onClick={onPrev}>prev</button>
         <div className="raffle__top">
-            <div className="raffle__title">Игрок {number}</div>
+            <div className="raffle__title">игрок {number}</div>
             <div className="raffle__player-name">{nickname}</div>
         </div>
         <div className="raffle__bottom">

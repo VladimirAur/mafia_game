@@ -6,4 +6,5 @@ body {
 	min-height: 100vh;
 	background-color: $bg-page;
 	box-sizing: border-box;
+	z-index: -1;
 }
