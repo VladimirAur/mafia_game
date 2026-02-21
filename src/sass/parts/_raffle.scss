@@ -83,10 +83,10 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
+		width: 100%;
 	}
 
 	// .raffle__player-role
-
 	&__player-role {
 		position: relative;
 		margin-bottom: 60px;
@@ -120,8 +120,26 @@
 	// .raffle__btn-next
 
 	&__btn-next {
-		min-height: 50px;
+		height: 49px;
+		width: 94%;
+		max-width: 480px;
+		text-align: center;
+		line-height: 49px;
+		font-size: 16px;
+		font-family: $rb-rg;
 		color: $text-primary;
-		font-size: 30px;
+		background-color: $color-primary;
+		box-sizing: border-box;
+		border-radius: 10px;
+		&:active {
+			background-color: $color-secondary;
+		}
+		&--disabled {
+			opacity: 0.5;
+			&:active {
+				background-color: $color-primary;
+				opacity: 0.5;
+			}
+		}
 	}
 }

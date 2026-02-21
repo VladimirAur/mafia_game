@@ -1,16 +1,10 @@
 import React from 'react'
-import object from "../../bd.json";
+import { useAppContext } from '../../App';
 import PlayersItem from './PlayersItem';
 
 const Players = () => {
-    const [players,setPlayers] = React.useState([]);
-
-    React.useEffect(() =>{
-        setPlayers(object.players);
+    const {players,setPlayers} = useAppContext();
        
-        
-    },[])  
-    
     
   return (    		
     <div className="players">

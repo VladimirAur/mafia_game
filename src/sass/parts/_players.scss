@@ -18,7 +18,6 @@
 	}
 
 	// .player__number
-
 	&__number {
 		width: 25px;
 		padding: 15px 15px;
@@ -77,14 +76,23 @@
 
 	// .player__role
 	&__role {
+		position: relative;
 		padding: 2px 12px;
 		margin-right: 20px;
 		font-family: $rb-rg;
 		font-size: 16px;
 		color: $text-primary;
-		background-color: $bg-number;
-		border-radius: 15px;
-		box-shadow: 1px 1px 5px #828080;
+		border-radius: 5px;
+		&::after {
+			content: '';
+			position: absolute;
+			left: -15px;
+			right: -15px;
+			bottom: -1px;
+			height: 2px;
+			background: linear-gradient(to right, transparent, $accent, transparent); /* сужение к краям */
+			border-radius: 1px;
+		}
 	}
 
 	// .player__foll
@@ -104,35 +112,48 @@
 	// .player__foll-btn
 	&__foll-btn {
 		font-family: $rb-rg;
-		font-size: 20px;
+		padding: 12px;
+		height: 49px;
+		font-size: 16px;
 		color: $text-primary;
-		background-color: $color-primary;
+		background-color: $bg-number;
+		&--mod {
+			border-radius: 0 5px 5px 0;
+		}
+		&:active {
+			background-color: $bg-card;
+		}
 	}
 
 	&__foll-count {
 		display: flex;
 		align-items: center;
-		border: 2px solid $color-primary;
+
 		border-radius: 5px;
 		box-sizing: border-box;
 	}
 	// .player__foll-left
 	&__foll-left {
-		// border-radius: 0 5px 5px 0;
+		width: 36px;
+		border-radius: 10px 0 0 10px;
 	}
 	// .player__foll-right
 	&__foll-right {
-		// border-radius: 5px 0 0 5px;
+		border-radius: 0 10px 10px 0;
 	}
 
-	// .player__foll-count
-
+	// .player__foll-number
 	&__foll-number {
-		display: block;
-		padding: 4px 0 4px 5px;
-		width: 15px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		text-align: center;
+		margin: 0 3px 0 3px;
+		width: 36px;
+		height: 47px;
 		font-size: 16px;
+		font-family: $rb-rg;
 		color: $text-secondary;
-		background-color: $color-secondary;
+		background-color: $bg-card;
 	}
 }
