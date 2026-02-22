@@ -4,6 +4,8 @@
 	// background-color: #f8fafa;
 	// .players__list
 	&__list {
+		max-height: 80vh;
+		overflow-y: auto;
 	}
 }
 
