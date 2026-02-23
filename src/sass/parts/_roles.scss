@@ -1,4 +1,12 @@
 .roles {
+	display: grid;
+	grid-template-rows: 1fr auto;
+	min-height: calc(100dvh - 100px);
+	box-sizing: border-box;
+	&__options {
+		overflow-y: auto;
+	}
+
 	// .roles__title
 	padding: 10px;
 	&__title {
@@ -39,6 +47,7 @@
 	// .roles__list
 	&__list {
 		width: 100%;
+		min-height: 0;
 	}
 
 	// .roles__add
@@ -68,17 +77,10 @@
 	}
 	// .roles__start
 	&__start {
-		position: fixed;
-		display: inline-block;
-		bottom: 20px;
-		bottom: calc(20px + env(safe-area-inset-bottom));
-		left: 50%;
-		transform: translateX(-50%);
-		height: 49px;
-		width: 94%;
-		max-width: 480px;
+		display: block;
+		margin-top: auto;
+		padding: 15px;
 		text-align: center;
-		line-height: 49px;
 		font-size: 16px;
 		font-family: $rb-rg;
 		color: $text-primary;
