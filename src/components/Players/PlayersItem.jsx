@@ -10,7 +10,7 @@ const PlayersItem = ({ id, number, nickname, role, foul, addFoul, removeFoul, ba
                 className={`player__number ${ban ? "player__number--disabled":""}`}
                 >{number}</span>
 			<div className="player__desc">
-				<div className="player__name">{nickname}</div>
+				<div className="player__name">{nickname ? nickname : "Игрок"}</div>
 				{/* <div className="player__status">
 					<div className="player__role">{role}</div>
 				</div> */}

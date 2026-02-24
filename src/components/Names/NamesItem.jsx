@@ -28,7 +28,7 @@ const NamesItem = ({number, id}) => {
           <input
                 type="text"
                 value={player?.nickname || ""}
-                placeholder="Имя..."
+                placeholder="Игрок..."
                 className="player__input"
                 onFocus={() => setInFocus(true)}
                 onBlur={() => setInFocus(false)}

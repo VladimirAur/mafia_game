@@ -1,6 +1,13 @@
 .players {
 	position: relative;
 	padding: 10px;
+	display: grid;
+	grid-template-rows: 1fr auto;
+	min-height: calc(100dvh - 100px);
+	box-sizing: border-box;
+	&__options {
+		overflow-y: auto;
+	}
 	// background-color: #f8fafa;
 	// .players__list
 	&__list {
