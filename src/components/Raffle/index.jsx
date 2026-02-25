@@ -1,10 +1,10 @@
 import React from 'react';
-import { useAppContext } from '../../App';
 import RaffleItem from './RaffleItem';
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 const Raffle = () => {
-	const { players } = useAppContext();
+	const  players  = useSelector(state => state.players.playersData);
     const navigate = useNavigate();
 	const [activeIndex, setActiveIndex] = React.useState(0);
 
@@ -33,7 +33,7 @@ const Raffle = () => {
 		<div className="raffle">
 			{players.map((player, index) => (
 				<RaffleItem
-					key={player.id}                    
+					key={player.number}                    
 					{...player}
 					active={index === activeIndex}
 					isLast={isLast}

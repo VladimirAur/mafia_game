@@ -1,6 +1,3 @@
-import React from 'react';
-
-
 
 const RaffleItem = ({img, role, number, active, nickname, isLast, onNext, onPrev, onStart}) => {
 

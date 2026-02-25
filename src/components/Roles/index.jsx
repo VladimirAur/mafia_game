@@ -49,6 +49,8 @@ const Roles = () => {
                 number: index + 1,
                 nickname: '',
                 role: name,
+                foul: 0,
+                ban: false,
                 img: imgUrl
             }
         })          

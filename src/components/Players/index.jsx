@@ -1,44 +1,19 @@
 import React from 'react';
-import { useAppContext } from '../../App';
 import PlayersItem from './PlayersItem';
+import { useDispatch, useSelector } from 'react-redux';
+import { decrementFoul, incrementFoul } from '../../redux/slices/playerSlice';
 
 const Players = () => {
-	const { players, setPlayers } = useAppContext();
+    const dispatch = useDispatch();
+	const players = useSelector(state => state.players.playersData);
 
-	const addFoul = (id) => {
-		setPlayers((prev) =>
-			prev.map((player) => {
-				if (player.id !== id) return player;
-
-				if (player.foul >= 4) return player; // больше 4 нельзя
-
-				const newFoul = player.foul + 1;
-
-				return {
-					...player,
-					foul: newFoul,
-					ban: newFoul === 4,
-				};
-			}),
-		);
+	const addFoul = (number) => {
+        dispatch(incrementFoul(number))
+		
 	};
 
-	const removeFoul = (id) => {
-		setPlayers((prev) =>
-			prev.map((player) => {
-				if (player.id !== id) return player;
-
-				if (player.foul <= 0) return player; // меньше 0 нельзя
-
-				const newFoul = player.foul - 1;
-
-				return {
-					...player,
-					foul: newFoul,
-					ban: false, // при уменьшении с 4 до 3 бан снимется
-				};
-			}),
-		);
+	const removeFoul = (number) => {
+		dispatch(decrementFoul(number));
 	};
 
     
@@ -46,8 +21,8 @@ const Players = () => {
 	return (
 		<div className="players">
 			<ul className="players__list">
-				{players.map((item) => (
-					<PlayersItem key={item.id} {...item} addFoul={addFoul} removeFoul={removeFoul} />
+				{players.map((player) => (
+					<PlayersItem key={player.number} {...player} addFoul={addFoul} removeFoul={removeFoul} />
 				))}
 			</ul>
 		</div>

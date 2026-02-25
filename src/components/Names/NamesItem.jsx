@@ -1,24 +1,22 @@
 import React from 'react';
-import { useAppContext } from '../../App';
+import { useDispatch, useSelector } from 'react-redux';
+import { addPlayerNickname } from '../../redux/slices/playerSlice';
 
-const NamesItem = ({number, id}) => {
-  const {players,setPlayers} = useAppContext();
+const NamesItem = ({number}) => {
+  const dispatch = useDispatch();  
+  const players = useSelector((state) => state.players.playersData);
   const [inFocus, setInFocus] = React.useState(false);
 
 
- const player = players.find(p => p.id === id);
+    const player = players.find(player => player.number === number);
 
-  const handleChange = (e) => {
-    const newValue = e.target.value;
+    const handleChange = (e) => {
+        dispatch(addPlayerNickname({
+            number: player.number,
+            name: e.target.value
+        }))
 
-    setPlayers(prev =>
-      prev.map(p =>
-        p.id === id
-          ? { ...p, nickname: newValue }
-          : p
-      )
-    );
-  };
+    };
  
 
   return (
