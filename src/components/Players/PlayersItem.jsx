@@ -1,6 +1,7 @@
 import React from 'react';
 
-const PlayersItem = ({ number, nickname, role, foul, addFoul, removeFoul, ban }) => {    
+const PlayersItem = ({ number, nickname, role, foul, addFoul, removeFoul, excludePlayer, ban }) => {   
+       
     
 
 	return (
@@ -29,6 +30,8 @@ const PlayersItem = ({ number, nickname, role, foul, addFoul, removeFoul, ban })
                     onClick={() => addFoul(number)}>+</button>
 				</div>
 			</div>
+            <button className="player__foll-btn player__foll-del" 
+                    onClick={() => excludePlayer(number)}>x</button>
 		</li>
 	);
 };

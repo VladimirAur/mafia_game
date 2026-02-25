@@ -77,6 +77,7 @@ const roleSlice = createSlice({
 			if (role) role.number = 0;
 			state.totalCount = calculateTotal(state.rolesData);
 		},
+		returnState: () => initialState,
 	},
 });
 
@@ -92,5 +93,5 @@ export const selectRoles = createSelector([(state) => state.roles.rolesData], (r
 	return { mainRoles, extraRoles };
 });
 
-export const { activateRole, incrementNumber, decrementNumber, resetNumber } = roleSlice.actions;
+export const { activateRole, incrementNumber, decrementNumber, resetNumber, returnState } = roleSlice.actions;
 export default roleSlice.reducer;

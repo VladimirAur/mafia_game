@@ -26,8 +26,12 @@ const playerSlice = createSlice({
 			if (player.foul > 0) player.foul -= 1;
 			player.ban = player.foul >= 4;
 		},
+		deletePlayer(state, action) {
+			const player = state.playersData.find((player) => player.number === action.payload);
+			player.ban = true;
+		},
 	},
 });
 
-export const { setPlayers, addPlayerNickname, incrementFoul, decrementFoul } = playerSlice.actions;
+export const { setPlayers, addPlayerNickname, incrementFoul, decrementFoul, deletePlayer } = playerSlice.actions;
 export default playerSlice.reducer;

@@ -1,14 +1,77 @@
 .header {
+	position: relative;
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
 	padding: 20px 10px 0px 10px;
 	background-color: $bg-card;
+	&__burger {
+		cursor: pointer;
+		box-sizing: border-box;
+
+		&-line {
+			display: block;
+			width: 30px;
+			height: 2px;
+			margin: 6px 0;
+			background-color: $text-primary;
+			&:last-child {
+				margin-bottom: 0;
+			}
+		}
+		&--active {
+			transform: translateY(5px);
+			span {
+				display: none;
+				margin: -2px;
+				&:last-child {
+					display: block;
+					width: 32px;
+					transform: rotate(-45deg);
+				}
+				&:first-child {
+					display: block;
+					width: 32px;
+					transform: rotate(45deg);
+				}
+			}
+		}
+	}
 	// .header__name
 	&__name {
 		font-family: $ms-rg;
 		font-size: 25px;
 		color: $text-primary;
 		text-shadow: 2px 2px 6px $bg-card;
+	}
+	&__popup {
+		position: absolute;
+		right: 0;
+		top: 92px;
+		display: flex;
+		justify-content: flex-end;
+		width: 100%;
+		height: 100vh;
+		padding: 10px;
+		background-color: rgba(41, 43, 44, 0.7);
+		box-sizing: border-box;
+		z-index: 99;
+	}
+	&__btn-confirm {
+		align-self: flex-start;
+		display: inline-block;
+		font-family: $rb-rg;
+		padding: 10px 40px;
+		font-size: 16px;
+		color: $text-primary;
+		background-color: $color-primary;
+		border-radius: 10px;
+		cursor: pointer;
+		&--mod {
+			border-radius: 0 5px 5px 0;
+		}
+		&:active {
+			background-color: $bg-card;
+		}
 	}
 }

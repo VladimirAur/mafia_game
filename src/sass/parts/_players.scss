@@ -157,6 +157,19 @@
 	&__foll-right {
 		border-radius: 0 10px 10px 0;
 	}
+	&__foll-del {
+		padding: 0 18px;
+		color: $accent;
+		border-radius: 10px;
+		border: 1px solid $accent;
+		box-sizing: border-box;
+		&:focus {
+			border: 1px solid $accent;
+		}
+		&:active {
+			border: none;
+		}
+	}
 
 	// .player__foll-number
 	&__foll-number {
