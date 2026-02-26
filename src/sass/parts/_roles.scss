@@ -1,6 +1,9 @@
 .roles {
-	display: grid;
-	grid-template-rows: 1fr auto;
+	// display: grid;
+	// grid-template-rows: 1fr auto;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
 	min-height: calc(100dvh - 100px);
 	box-sizing: border-box;
 	&__options {
@@ -109,8 +112,10 @@
 
 	// .role__name
 	&__name {
+		display: flex;
+		align-items: center;
 		width: 100%;
-		padding: 15px;
+		padding: 15px 10px;
 		margin-right: 10px;
 		font-family: $rb-rg;
 		font-size: 16px;
@@ -127,6 +132,13 @@
 		&--modbrt {
 			border-radius: 10px 10px 0 0;
 		}
+		span {
+			margin-right: 5px;
+		}
+		.icon-mafiya {
+			font-size: 20px;
+			margin-right: 0;
+		}
 	}
 
 	// .role__count
@@ -140,10 +152,11 @@
 		font-family: $rb-rg;
 		padding: 12px;
 		height: 49px;
-		font-size: 16px;
+		font-size: 10px;
 		color: $text-primary;
 		background-color: $bg-number;
 		&--mod {
+			font-size: 16px;
 			border-radius: 0 5px 5px 0;
 		}
 		&:active {
@@ -178,14 +191,18 @@
 	}
 
 	&__btn--del {
+		display: flex;
+		align-items: center;
+		justify-content: center;
 		margin-left: 5px;
 		width: 45px;
 		color: $accent;
+		font-size: 14px;
 		border-radius: 10px;
-		border: 1px solid $accent;
+		// border: 1px solid $accent;
 		box-sizing: border-box;
 		&:focus {
-			border: 1px solid $accent;
+			// border: 1px solid $accent;
 		}
 		&:active {
 			border: none;

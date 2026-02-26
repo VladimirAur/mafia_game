@@ -5,7 +5,7 @@ import Header from '../components/Header';
 const Match = () => {
 	return (
 		<div className='container'>
-			<Header />
+			<Header linkToNaming={true} daySwitcher={true}/>
 			<Players />
 		</div>
 	);

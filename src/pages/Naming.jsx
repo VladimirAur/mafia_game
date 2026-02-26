@@ -6,7 +6,7 @@ const Naming = () => {
   
   return (
     <div className='container'>
-        <Header/>
+        <Header linkToOptions={true}/>
         <Names/>     
     </div>
   )

@@ -1,8 +1,11 @@
 .players {
 	position: relative;
 	padding: 10px;
-	display: grid;
-	grid-template-rows: 1fr auto;
+	// display: grid;
+	// grid-template-rows: 1fr auto;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
 	min-height: calc(100dvh - 100px);
 	box-sizing: border-box;
 	&__options {
@@ -31,7 +34,7 @@
 	// .player__number
 	&__number {
 		position: relative;
-		width: 25px;
+		width: 35px;
 		padding: 15px 15px;
 		// margin-right: -2px;
 		font-family: $ms-bd;
@@ -130,7 +133,7 @@
 		font-family: $rb-rg;
 		padding: 12px;
 		height: 49px;
-		font-size: 16px;
+		font-size: 10px;
 		color: $text-primary;
 		background-color: $bg-number;
 		&--mod {
@@ -158,11 +161,16 @@
 		border-radius: 0 10px 10px 0;
 	}
 	&__foll-del {
+		display: flex;
+		justify-content: center;
+		align-items: center;
 		padding: 0 18px;
 		color: $accent;
 		border-radius: 10px;
-		border: 1px solid $accent;
+		font-size: 14px;
+		// border: 1px solid $accent;
 		box-sizing: border-box;
+
 		&:focus {
 			border: 1px solid $accent;
 		}

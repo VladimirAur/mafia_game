@@ -6,41 +6,49 @@ const rolesArray = [
 		id: '',
 		name: 'Мафия',
 		number: 2,
+		icon: 'icon-mafiya',
 		img: 'assets/img/chelovek_siluet_dym_121937_168x300.jpg',
 	},
 	{
 		name: 'Житель',
 		number: 6,
+		icon: 'icon-user',
 		img: 'assets/img/listia_liniia_neon_139772_168x300.jpg',
 	},
 	{
 		name: 'Дон',
 		number: 1,
+		icon: 'icon-dollar',
 		img: 'assets/img/volk_siluet_luna_118727_168x300.jpg',
 	},
 	{
 		name: 'Шериф',
 		number: 1,
+		icon: 'icon-badge',
 		img: 'assets/img/luna_derevo_zvezdnoe_nebo_132139_168x300.jpg',
 	},
 	{
 		name: 'Любовница',
 		number: 0,
+		icon: 'icon-user',
 		img: 'assets/img/astronavt_portal_neon_141352_168x300.jpg',
 	},
 	{
 		name: 'Маньяк',
 		number: 0,
+		icon: 'icon-user',
 		img: 'assets/img/doroga_zakat_gorizont_118582_168x300.jpg',
 	},
 	{
 		name: 'Гомночист',
 		number: 0,
+		icon: 'icon-user',
 		img: 'assets/img/doroga_razmetka_pasmurno_124093_168x300.jpg',
 	},
 	{
 		name: 'Хакер',
 		number: 0,
+		icon: 'icon-user',
 		img: 'assets/img/zvezdnoe_nebo_mlechnyj_put_noch_124665_168x300.jpg',
 	},
 ];
@@ -77,7 +85,7 @@ const roleSlice = createSlice({
 			if (role) role.number = 0;
 			state.totalCount = calculateTotal(state.rolesData);
 		},
-		returnState: () => initialState,
+		resetRoles: () => initialState,
 	},
 });
 
@@ -93,5 +101,5 @@ export const selectRoles = createSelector([(state) => state.roles.rolesData], (r
 	return { mainRoles, extraRoles };
 });
 
-export const { activateRole, incrementNumber, decrementNumber, resetNumber, returnState } = roleSlice.actions;
+export const { activateRole, incrementNumber, decrementNumber, resetNumber, resetRoles } = roleSlice.actions;
 export default roleSlice.reducer;

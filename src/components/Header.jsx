@@ -1,39 +1,57 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import { returnState } from '../redux/slices/roleSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link, useNavigate } from 'react-router-dom';
+import { resetRoles } from '../redux/slices/roleSlice';
+import { nextPhase, resetPhase } from '../redux/slices/phaseSlice';
 
-const Header = () => {
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
-    const [active, setActive] = React.useState(false);
+const Header = ({ linkToNaming, linkToOptions, daySwitcher }) => {
+	const dispatch = useDispatch();
+	const navigate = useNavigate();
+    const phase = useSelector(state => state.phases.phase);
+    const dayNumber = useSelector(state => state.phases.dayNumber);
+	const [active, setActive] = React.useState(false);
 
-    const startNewGame = () => {
-        setActive(false);
-        dispatch(returnState());
-        navigate('/');
+	const startNewGame = () => {
+		setActive(false);
+		dispatch(resetRoles());
+        dispatch(resetPhase());
+		navigate('/');
+	};
+
+    const switchPhase = () => {
+        dispatch(nextPhase());
     }
-    console.log("Header active", active);
-    
-  return (
-    <div className="header">
-        <h2 className="header__name">$ Mafia</h2>
-        <button className={`header__burger ${active ? 'header__burger--active' : ''}`}
-                onClick={() => setActive(!active)}>
-            <span className="header__burger-line"></span>
-            <span className="header__burger-line"></span>
-            <span className="header__burger-line"></span>
-        </button>
-        {active && (
-            <div className="header__popup">
-            <div className="header__btn-confirm"
-                 onClick={startNewGame}>Новая игра</div>
-        </div>
-        )}
-        
-           
-    </div>
-  )
-}
+
+	return (
+		<div className="header">
+			{linkToOptions && <Link to="/" className="header__prev icon-left2"></Link>}
+			{linkToNaming && <Link to="/drawing" className="header__prev icon-left2"></Link>}
+			<h2 className="header__name">
+				<span className="icon-mafiya"></span>Mafia
+			</h2>
+			<div className="header__buttons">
+                {daySwitcher && (<button className='header__switch'
+                                        onClick={switchPhase}>{phase} {dayNumber} 
+                                    <span className='icon-right'></span>                                    
+                                </button>)}
+				<button
+					className={`header__burger ${active ? 'header__burger--active' : ''}`}
+                    onClick={() => setActive(!active)}>
+					<span className="header__burger-line"></span>
+					<span className="header__burger-line"></span>
+					<span className="header__burger-line"></span>
+				</button>
+			</div>
+
+			{active && (
+				<div className="header__popup">
+					<div className="header__btn-confirm" onClick={startNewGame}>
+						Новая игра
+					</div>
+				</div>
+			)}
+		</div>
+	);
+};
 
 export default Header;

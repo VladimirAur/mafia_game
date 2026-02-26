@@ -12,7 +12,7 @@ const Names = () => {
 	return (
 		<div className="players">
 			<div className="players__options">
-				<h2 className="roles__title">% Имена Игроков</h2>
+				<h2 className="roles__title"><span className='icon-equalizer'></span> Имена Игроков</h2>
 				<ul className="players__list">
 					{players.map((player) => (
 						<NamesItem key={player.number} number={player.number} />

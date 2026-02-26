@@ -61,14 +61,14 @@ const Roles = () => {
 	return (
 		<div className="roles">
 			<div className="roles__options">
-				<h2 className="roles__title"># Выбор ролей</h2>
+				<h2 className="roles__title"><span className='icon-equalizer2'></span> Выбор ролей</h2>
 				<ul className="roles__list">
 					{mainRoles
 						.map((role) => (
 							<RolesItem
 								key={role.name}
 								role={role}
-								id={role.id}
+                                id={role.id}
 								resetRole={resetRole}
 								incRoleNumber={incRoleNumber}
 								decRoleNumber={decRoleNumber}

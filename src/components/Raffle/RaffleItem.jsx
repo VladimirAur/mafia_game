@@ -5,7 +5,9 @@ const RaffleItem = ({img, role, number, active, nickname, isLast, onNext, onPrev
   return (
     <div className={`raffle__item ${active ? "raffle__item--active" : ""}`}>
         <img className='raffle__img' src={img} alt="Фон" />    
-        <button className="raffle__btn-prev" onClick={onPrev}>prev</button>
+        <button className="raffle__btn-prev" onClick={onPrev}>
+            <span className="icon-left2"></span>
+        </button>
         <div className="raffle__top">
             <div className="raffle__title">игрок {number}</div>
             <div className="raffle__player-name">{nickname}</div>

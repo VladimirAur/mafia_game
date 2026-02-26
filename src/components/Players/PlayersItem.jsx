@@ -19,7 +19,7 @@ const PlayersItem = ({ number, nickname, role, foul, addFoul, removeFoul, exclud
 				<div className="player__foll-count">
 					<button 
                     className="player__foll-btn player__foll-left"
-                    onClick={() => removeFoul(number)}>-</button>
+                    onClick={() => removeFoul(number)}><span className='icon-minus'></span></button>
 					<input 
                     type="text" 
                     value={foul > 0 ? foul : "Ф"} 
@@ -27,11 +27,11 @@ const PlayersItem = ({ number, nickname, role, foul, addFoul, removeFoul, exclud
                     readOnly />
 					<button 
                     className="player__foll-btn player__foll-right"
-                    onClick={() => addFoul(number)}>+</button>
+                    onClick={() => addFoul(number)}><span className='icon-plus'></span></button>
 				</div>
 			</div>
             <button className="player__foll-btn player__foll-del" 
-                    onClick={() => excludePlayer(number)}>x</button>
+                    onClick={() => excludePlayer(number)}><span className='icon-close'></span></button>
 		</li>
 	);
 };
