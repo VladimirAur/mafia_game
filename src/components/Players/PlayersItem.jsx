@@ -2,8 +2,11 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import Timer from '../Timer';
 
-const PlayersItem = ({ number, nickname, role, foul, addFoul, removeFoul, excludePlayer, ban }) => {
+const PlayersItem = ({ number, nickname, role, foul, addFoul, removeFoul, excludePlayer, ban, hasTimer, timerMode }) => {
 	const phase = useSelector((state) => state.phases.phase);
+
+    
+    
 
 	return (
 		<li className={`player ${ban ? 'player--disabled' : ''}`}>
@@ -35,7 +38,10 @@ const PlayersItem = ({ number, nickname, role, foul, addFoul, removeFoul, exclud
 					<span className="icon-close"></span>
 				</button>
 			</div>
-			<Timer/>
+            {hasTimer && phase === 'День' && (
+                <Timer seconds={timerMode === 'normal' ? 60 : 30} />
+            )}
+			{/* <Timer/> */}
 		</li>
 	);
 };

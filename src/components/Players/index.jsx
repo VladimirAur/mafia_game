@@ -6,6 +6,10 @@ import { decrementFoul, deletePlayer, incrementFoul } from '../../redux/slices/p
 const Players = () => {
     const dispatch = useDispatch();
 	const players = useSelector(state => state.players.playersData);
+    const currentPlayer = useSelector(state => state.match.currentPlayerNumber);
+    const timerMode = useSelector(state => state.match.timerMode);
+
+    console.log(timerMode );
 
 	const addFoul = (number) => {
         dispatch(incrementFoul(number))
@@ -27,7 +31,9 @@ const Players = () => {
 					<PlayersItem 
                         key={player.number} 
                         {...player} 
-                        addFoul={addFoul} r
+                        hasTimer={player.number === currentPlayer}
+                        timerMode={timerMode}
+                        addFoul={addFoul} 
                         removeFoul={removeFoul} 
                         excludePlayer={excludePlayer}/>
 				))}

@@ -35,8 +35,7 @@ const Header = ({ linkToNaming, linkToOptions, daySwitcher }) => {
         dispatch(prevPhase());
     }
 
-    console.log(currentPlayer);
-    
+       
 
 	return (
 		<div className="header">
