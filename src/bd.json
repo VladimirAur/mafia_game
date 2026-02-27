@@ -105,3 +105,27 @@
 		}
 	]
 }
+
+startDay: (state) => {
+  // 1️⃣ ищем забаненного игрока, кто ещё не говорил прощальную речь
+  const bannedPlayer = state.playersData.find(p => p.ban && !p.bannedSpoken);
+
+  if (bannedPlayer) {
+    state.currentPlayerNumber = bannedPlayer.number;
+    state.timerMode = 'ban';        // 30с
+    bannedPlayer.bannedSpoken = true;
+    return;                         // выходим, обычная очередь пока не нужна
+  }
+
+  // 2️⃣ обычная очередь — берём живого игрока, который ещё не говорил
+  const next = state.playersData.find(p => !p.ban && !state.playersWhoSpoke.includes(p.number));
+
+  if (next) {
+    state.currentPlayerNumber = next.number;
+    state.timerMode = 'normal';     // 60с
+    state.playersWhoSpoke.push(next.number);
+  } else {
+    // 3️⃣ если никого не осталось → конец дня
+    state.currentPlayerNumber = null;
+  }
+}

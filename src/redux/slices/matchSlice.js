@@ -14,22 +14,25 @@ const matchSlice = createSlice({
 		startDay: (state, action) => {
 			const { players, dayNumber } = action.payload;
 
-			const start = players.find((p) => p.number >= dayNumber && !p.ban) ?? players.find((p) => !p.ban);
+			// ищем первого банированного игрока
+			const banned = players.find((p) => p.ban);
 
-			state.currentPlayerNumber = start?.number ?? null;
-			state.timerMode = 'normal';
+			if (banned) {
+				state.currentPlayerNumber = banned.number;
+				state.timerMode = 'foul'; // 30с
+			} else {
+				// первый игрок дня по номеру >= dayNumber
+				const start = players.find((p) => p.number >= dayNumber && !p.ban) ?? players.find((p) => !p.ban);
+
+				state.currentPlayerNumber = start?.number ?? null;
+				state.timerMode = 'normal'; // 60с
+			}
+
 			state.nominatedPlayers = [];
 		},
 
-		// следующий живой игрок (60с)
-		nextPlayer: (state, action) => {
-			const alive = action.payload.filter((p) => !p.ban);
-
-			const index = alive.findIndex((p) => p.number === state.currentPlayerNumber);
-
-			const next = alive[(index + 1) % alive.length];
-
-			state.currentPlayerNumber = next?.number ?? null;
+		nextPlayerReducer: (state, action) => {
+			state.currentPlayerNumber = action.payload;
 			state.timerMode = 'normal';
 		},
 
@@ -49,6 +52,17 @@ const matchSlice = createSlice({
 	},
 });
 
-export const { startDay, nextPlayer, startBanTimer, nominatePlayer } = matchSlice.actions;
+export const nextPlayer = () => (dispatch, getState) => {
+	const players = getState().players.playersData;
+	const { currentPlayerNumber } = getState().match;
+
+	const alive = players.filter((p) => !p.ban);
+	const index = alive.findIndex((p) => p.number === currentPlayerNumber);
+	const next = alive[(index + 1) % alive.length];
+
+	dispatch(nextPlayerReducer(next?.number ?? null));
+};
+
+export const { startDay, nextPlayerReducer, startBanTimer, nominatePlayer } = matchSlice.actions;
 
 export default matchSlice.reducer;

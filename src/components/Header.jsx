@@ -14,6 +14,8 @@ const Header = ({ linkToNaming, linkToOptions, daySwitcher }) => {
     const currentPlayer = useSelector(state => state.match.currentPlayerNumber);
 	const [active, setActive] = React.useState(false);
 
+     
+
 	const startNewGame = () => {
 		setActive(false);
 		dispatch(resetRoles());

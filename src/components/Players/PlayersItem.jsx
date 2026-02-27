@@ -3,9 +3,7 @@ import { useSelector } from 'react-redux';
 import Timer from '../Timer';
 
 const PlayersItem = ({ number, nickname, role, foul, addFoul, removeFoul, excludePlayer, ban, hasTimer, timerMode }) => {
-	const phase = useSelector((state) => state.phases.phase);
-
-    
+	const phase = useSelector((state) => state.phases.phase);   
     
 
 	return (
