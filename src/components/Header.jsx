@@ -3,12 +3,15 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { resetRoles } from '../redux/slices/roleSlice';
 import { nextPhase, prevPhase, resetPhase } from '../redux/slices/phaseSlice';
+import { startDay } from '../redux/slices/matchSlice';
 
 const Header = ({ linkToNaming, linkToOptions, daySwitcher }) => {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
     const phase = useSelector(state => state.phases.phase);
     const dayNumber = useSelector(state => state.phases.dayNumber);
+    const players = useSelector(state => state.players.playersData);
+    const currentPlayer = useSelector(state => state.match.currentPlayerNumber);
 	const [active, setActive] = React.useState(false);
 
 	const startNewGame = () => {
@@ -19,12 +22,21 @@ const Header = ({ linkToNaming, linkToOptions, daySwitcher }) => {
 	};
 
     const switchPhase = () => {
+        const next = phase === "night" ? "day" : "night";
+
         dispatch(nextPhase());
+        
+        if (next === "night") {
+        dispatch(startDay({players,dayNumber}));
+        }
     }
 
     const returnPhase = () => {
         dispatch(prevPhase());
     }
+
+    console.log(currentPlayer);
+    
 
 	return (
 		<div className="header">

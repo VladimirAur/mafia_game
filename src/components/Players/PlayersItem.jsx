@@ -1,5 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import Timer from '../Timer';
 
 const PlayersItem = ({ number, nickname, role, foul, addFoul, removeFoul, excludePlayer, ban }) => {
 	const phase = useSelector((state) => state.phases.phase);
@@ -34,15 +35,7 @@ const PlayersItem = ({ number, nickname, role, foul, addFoul, removeFoul, exclud
 					<span className="icon-close"></span>
 				</button>
 			</div>
-
-			<div className="player__timer timer">
-                <div className="timer__control">
-                    <div className="timer__count">60 сек</div>
-                    <button className="timer__button"><span className='icon-play3'></span></button>
-                    <button className="timer__button"><span className='icon-stop2'></span></button>
-                </div>				
-				<button className="timer__button timer__button-next">Следующий Игрок</button>
-			</div>
+			<Timer/>
 		</li>
 	);
 };
