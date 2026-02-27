@@ -20,17 +20,23 @@
 }
 
 .player {
-	position: relative;
-	display: flex;
-	align-items: center;
 	margin-bottom: 5px;
 	&--disabled {
 		opacity: 0.5;
 	}
+	&--naming {
+		position: relative;
+		display: flex;
+		align-items: center;
+	}
 	&:last-child {
 		margin-bottom: 70px;
 	}
-
+	&__item {
+		position: relative;
+		display: flex;
+		align-items: center;
+	}
 	// .player__number
 	&__number {
 		position: relative;
