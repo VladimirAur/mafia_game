@@ -1,0 +1,48 @@
+.timer {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 10px 5px 5px 5px;
+	background-color: $bg-header;
+	box-sizing: border-box;
+	border-radius: 0 0 5px 5px;
+	&__control {
+		display: flex;
+		align-items: center;
+	}
+	// .timer__count
+	&__count {
+		font-size: 24px;
+		font-family: $ms-sb;
+		color: $text-secondary;
+		margin-right: 10px;
+	}
+
+	// .timer__button
+	&__button {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: 8px;
+		font-size: 16px;
+		font-family: $rb-rg;
+		color: $text-secondary;
+		background-color: $color-secondary;
+		margin-right: 10px;
+		border-radius: 10px;
+		box-sizing: border-box;
+		&:active {
+			background-color: $color-primary;
+		}
+		&:last-child {
+			margin-right: 0;
+		}
+		&-next {
+			background-color: $color-primary;
+			border-radius: 5px;
+			&:active {
+				background-color: $color-secondary;
+			}
+		}
+	}
+}
