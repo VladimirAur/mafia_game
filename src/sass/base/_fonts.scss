@@ -77,6 +77,18 @@
 	-moz-osx-font-smoothing: grayscale;
 }
 
+.icon-man1:before {
+	content: '\e906';
+}
+.icon-left2:before {
+	content: '\e905';
+}
+.icon-close:before {
+	content: '\e902';
+}
+.icon-dollar:before {
+	content: '\e903';
+}
 .icon-right:before {
 	content: '\e901';
 }
@@ -92,9 +104,6 @@
 .icon-badge:before {
 	content: '\e900';
 }
-.icon-user:before {
-	content: '\e971';
-}
 .icon-equalizer:before {
 	content: '\e992';
 }
@@ -104,12 +113,21 @@
 .icon-numbered:before {
 	content: '\e9b9';
 }
+.icon-man:before {
+	content: '\e9dc';
+}
 .icon-plus:before {
 	content: '\ea0a';
 }
 .icon-minus:before {
 	content: '\ea0b';
 }
-.icon-left2:before {
-	content: '\ea40';
+.icon-play3:before {
+	content: '\ea1c';
+}
+.icon-pause2:before {
+	content: '\ea1d';
+}
+.icon-stop2:before {
+	content: '\ea1e';
 }

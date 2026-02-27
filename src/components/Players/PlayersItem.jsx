@@ -17,8 +17,7 @@ const PlayersItem = ({ number, nickname, role, foul, addFoul, removeFoul, exclud
                     <div className="player__status">
                         <div className="player__role">{role}</div>
                     </div>
-                )}
-				
+                )}				
 			</div>
             {phase === 'День' && (
                 <div className="player__foll">
@@ -40,6 +39,12 @@ const PlayersItem = ({ number, nickname, role, foul, addFoul, removeFoul, exclud
 			
             <button className="player__foll-btn player__foll-del" 
                     onClick={() => excludePlayer(number)}><span className='icon-close'></span></button>
+            <div className="player__timer timer">
+                <div className="timer__count">60c</div>
+                <button className="timer__button">S</button>
+                <button className="timer__button">P</button>
+                <button className="timer__button">Следующий</button>
+            </div>        
 		</li>
 	);
 };

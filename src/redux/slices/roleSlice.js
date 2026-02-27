@@ -12,7 +12,7 @@ const rolesArray = [
 	{
 		name: 'Житель',
 		number: 6,
-		icon: 'icon-user',
+		icon: 'icon-man1',
 		img: 'assets/img/listia_liniia_neon_139772_168x300.jpg',
 	},
 	{
@@ -30,25 +30,25 @@ const rolesArray = [
 	{
 		name: 'Любовница',
 		number: 0,
-		icon: 'icon-user',
+		icon: 'icon-man',
 		img: 'assets/img/astronavt_portal_neon_141352_168x300.jpg',
 	},
 	{
 		name: 'Маньяк',
 		number: 0,
-		icon: 'icon-user',
+		icon: 'icon-man',
 		img: 'assets/img/doroga_zakat_gorizont_118582_168x300.jpg',
 	},
 	{
 		name: 'Гомночист',
 		number: 0,
-		icon: 'icon-user',
+		icon: 'icon-man',
 		img: 'assets/img/doroga_razmetka_pasmurno_124093_168x300.jpg',
 	},
 	{
 		name: 'Хакер',
 		number: 0,
-		icon: 'icon-user',
+		icon: 'icon-man',
 		img: 'assets/img/zvezdnoe_nebo_mlechnyj_put_noch_124665_168x300.jpg',
 	},
 ];

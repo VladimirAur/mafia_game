@@ -2,6 +2,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import roles from './slices/roleSlice';
 import players from './slices/playerSlice';
 import phases from './slices/phaseSlice';
+import match from './slices/matchSlice';
 
 import { loadState, saveState } from '../localStorage';
 
@@ -10,6 +11,7 @@ export const store = configureStore({
 		roles,
 		players,
 		phases,
+		match,
 	},
 	preloadedState: loadState(),
 });
