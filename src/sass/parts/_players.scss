@@ -23,7 +23,7 @@
 	position: relative;
 	display: flex;
 	align-items: center;
-	margin-bottom: 10px;
+	margin-bottom: 5px;
 	&--disabled {
 		opacity: 0.5;
 	}
@@ -34,7 +34,8 @@
 	// .player__number
 	&__number {
 		position: relative;
-		width: 35px;
+		width: 49px;
+		min-width: 49px;
 		padding: 15px 15px;
 		// margin-right: -2px;
 		font-family: $ms-bd;
@@ -44,6 +45,7 @@
 		background-color: $bg-number;
 		box-shadow: 1px 1px 2px #000;
 		border-radius: 5px;
+		box-sizing: border-box;
 		z-index: 10;
 		&--disabled {
 			pointer-events: none;
@@ -58,6 +60,7 @@
 		width: 100%;
 		min-height: 49px;
 		padding: 10px 0;
+		margin-right: 3px;
 		align-items: center;
 		background-color: $bg-card;
 		z-index: 0;
@@ -118,7 +121,7 @@
 	&__foll {
 		display: flex;
 		align-items: center;
-		padding: 0 5px;
+		margin-right: 3px;
 	}
 
 	// .player__foll-name
@@ -131,7 +134,7 @@
 	// .player__foll-btn
 	&__foll-btn {
 		font-family: $rb-rg;
-		padding: 12px;
+		// padding: 12px;
 		height: 49px;
 		font-size: 10px;
 		color: $text-primary;
@@ -153,7 +156,7 @@
 	}
 	// .player__foll-left
 	&__foll-left {
-		width: 36px;
+		// width: 36px;
 		border-radius: 10px 0 0 10px;
 	}
 	// .player__foll-right
@@ -164,18 +167,18 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		padding: 0 18px;
+		padding: 0 10px;
 		color: $accent;
-		border-radius: 10px;
+		border-radius: 5px;
 		font-size: 14px;
 		// border: 1px solid $accent;
 		box-sizing: border-box;
 
 		&:focus {
-			border: 1px solid $accent;
+			border: none;
 		}
 		&:active {
-			border: none;
+			border: 1px solid $accent;
 		}
 	}
 
@@ -186,7 +189,7 @@
 		justify-content: center;
 		text-align: center;
 		margin: 0 3px 0 3px;
-		width: 36px;
+		width: 20px;
 		height: 47px;
 		font-size: 16px;
 		font-family: $rb-rg;

@@ -1,6 +1,8 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 
-const PlayersItem = ({ number, nickname, role, foul, addFoul, removeFoul, excludePlayer, ban }) => {   
+const PlayersItem = ({ number, nickname, role, foul, addFoul, removeFoul, excludePlayer, ban }) => {  
+    const phase = useSelector(state => state.phases.phase); 
        
     
 
@@ -11,11 +13,15 @@ const PlayersItem = ({ number, nickname, role, foul, addFoul, removeFoul, exclud
                 >{number}</span>
 			<div className="player__desc">
 				<div className="player__name">{nickname ? nickname : "Игрок"}</div>
-				{/* <div className="player__status">
-					<div className="player__role">{role}</div>
-				</div> */}
+                {phase === 'Ночь' && (
+                    <div className="player__status">
+                        <div className="player__role">{role}</div>
+                    </div>
+                )}
+				
 			</div>
-			<div className="player__foll">
+            {phase === 'День' && (
+                <div className="player__foll">
 				<div className="player__foll-count">
 					<button 
                     className="player__foll-btn player__foll-left"
@@ -30,6 +36,8 @@ const PlayersItem = ({ number, nickname, role, foul, addFoul, removeFoul, exclud
                     onClick={() => addFoul(number)}><span className='icon-plus'></span></button>
 				</div>
 			</div>
+            )}
+			
             <button className="player__foll-btn player__foll-del" 
                     onClick={() => excludePlayer(number)}><span className='icon-close'></span></button>
 		</li>

@@ -17,11 +17,21 @@ const phaseSlice = createSlice({
 				state.dayNumber += 1;
 			}
 		},
+		prevPhase(state) {
+			if (state.phase === 'День') {
+				state.phase = 'Ночь';
+			} else {
+				if (state.dayNumber > 1) {
+					state.phase = 'День';
+					state.dayNumber -= 1;
+				}
+			}
+		},
 
 		resetPhase: () => initialState,
 	},
 });
 
-export const { nextPhase, resetPhase } = phaseSlice.actions;
+export const { nextPhase, prevPhase, resetPhase } = phaseSlice.actions;
 
 export default phaseSlice.reducer;
