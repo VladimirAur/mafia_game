@@ -1,9 +1,11 @@
 import React from 'react';
 import RaffleItem from './RaffleItem';
 import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { startMatch } from '../../redux/slices/matchSlice';
 
 const Raffle = () => {
+    const dispatch = useDispatch();
 	const  players  = useSelector(state => state.players.playersData);
     const navigate = useNavigate();
 	const [activeIndex, setActiveIndex] = React.useState(0);
@@ -26,6 +28,7 @@ const Raffle = () => {
 	};
 
 	const startGame = () => {
+        dispatch(startMatch());
 		navigate('/match');
 	};
 

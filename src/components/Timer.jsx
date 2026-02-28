@@ -6,7 +6,7 @@ const Timer = ({seconds}) => {
     const dispatch = useDispatch();
 
     const handleNextPlayer = () => {
-        dispatch(nextPlayer()); 
+        // dispatch(nextPlayer()); 
         };
 
 	return (

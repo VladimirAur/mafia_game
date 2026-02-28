@@ -29,7 +29,7 @@ const Header = ({ linkToNaming, linkToOptions, daySwitcher }) => {
         dispatch(nextPhase());
         
         if (next === "night") {
-        dispatch(startDay({players,dayNumber}));
+        // dispatch(startDay({players,dayNumber}));
         }
     }
 

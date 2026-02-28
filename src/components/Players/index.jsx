@@ -2,6 +2,7 @@ import React from 'react';
 import PlayersItem from './PlayersItem';
 import { useDispatch, useSelector } from 'react-redux';
 import { decrementFoul, deletePlayer, incrementFoul } from '../../redux/slices/playerSlice';
+import { banMatchPlayer } from '../../redux/slices/matchSlice';
 
 const Players = () => {
     const dispatch = useDispatch();
@@ -22,6 +23,7 @@ const Players = () => {
 
     const excludePlayer = (number) => {
         dispatch(deletePlayer(number));
+        dispatch(banMatchPlayer(number));
     }
 
 	return (
