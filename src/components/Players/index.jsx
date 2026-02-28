@@ -7,11 +7,10 @@ import { banMatchPlayer } from '../../redux/slices/matchSlice';
 const Players = () => {
     const dispatch = useDispatch();
 	const players = useSelector(state => state.players.playersData);
-    const currentPlayer = useSelector(state => state.match.currentPlayerNumber);
+    const currentPlayer = useSelector(state => state.match.speakingOrder[0]);
     const timerMode = useSelector(state => state.match.timerMode);
 
-    console.log(timerMode );
-
+    
 	const addFoul = (number) => {
         dispatch(incrementFoul(number))
 		

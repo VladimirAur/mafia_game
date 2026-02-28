@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { resetRoles } from '../redux/slices/roleSlice';
 import { nextPhase, prevPhase, resetPhase } from '../redux/slices/phaseSlice';
-import { startDay } from '../redux/slices/matchSlice';
+import { resetMatch, startDay } from '../redux/slices/matchSlice';
 
 const Header = ({ linkToNaming, linkToOptions, daySwitcher }) => {
 	const dispatch = useDispatch();
@@ -20,6 +20,7 @@ const Header = ({ linkToNaming, linkToOptions, daySwitcher }) => {
 		setActive(false);
 		dispatch(resetRoles());
         dispatch(resetPhase());
+        dispatch(resetMatch());
 		navigate('/');
 	};
 
@@ -29,7 +30,7 @@ const Header = ({ linkToNaming, linkToOptions, daySwitcher }) => {
         dispatch(nextPhase());
         
         if (next === "night") {
-        // dispatch(startDay({players,dayNumber}));
+        dispatch(startDay());
         }
     }
 

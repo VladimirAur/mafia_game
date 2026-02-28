@@ -13,9 +13,38 @@ const matchSlice = createSlice({
 	reducers: {
 		setSpeakingOrder: (state, action) => {
 			state.speakingOrder = action.payload;
-			state.spokePlayers = [];
+		},
+
+		startDay: (state) => {
+			if (state.bannedQueue.length) {
+				const banned = state.bannedQueue[0]; // Добавить проверку на первый елемент null если есть убрать
+				state.speakingOrder = [banned, ...state.speakingOrder.filter((n) => n !== banned)];
+				state.timerMode = 'ban';
+			} else {
+				state.timerMode = 'normal';
+			}
+		},
+		endDay: (state, action) => {
+			const dayNumber = action.payload;
+
+			const player = state.spokePlayers.find((n) => n === dayNumber) ?? state.spokePlayers[0];
+
+			// первый элемент null → таймер не стартует сразу
+			state.speakingOrder = [null, ...state.spokePlayers.filter((n) => n !== player), player];
+
 			state.bannedQueue = [];
-			state.currentPlayerNumber = 1;
+			state.spokePlayers = [];
+			state.timerMode = 'normal';
+		},
+
+		nextPlayer: (state) => {
+			if (!state.speakingOrder.length) return;
+
+			const player = state.speakingOrder.shift();
+
+			if (!state.bannedQueue.includes(player)) {
+				state.spokePlayers.push(player);
+			}
 		},
 		banMatchPlayer: (state, action) => {
 			const bannedNumber = action.payload;
@@ -28,30 +57,7 @@ const matchSlice = createSlice({
 
 			state.timerMode = 'normal';
 		},
-		startDay: (state) => {
-			// если есть бан, он говорит первым
-			if (state.bannedQueue.length) {
-				const banned = state.bannedQueue.shift();
-				state.currentPlayerNumber = banned;
-				state.timerMode = 'ban';
-			} else {
-				const first = state.speakingOrder.shift();
-				state.currentPlayerNumber = first;
-				state.timerMode = 'normal';
-			}
-
-			state.spokePlayers = [];
-		},
-		nextPlayer: (state) => {
-			if (state.speakingOrder.length) {
-				const next = state.speakingOrder.shift();
-				state.currentPlayerNumber = next;
-				state.timerMode = 'normal';
-				state.spokePlayers.push(next);
-			} else {
-				state.currentPlayerNumber = null; // конец дня
-			}
-		},
+		resetMatch: () => initialState,
 	},
 });
 
@@ -62,6 +68,6 @@ export const startMatch = () => (dispatch, getState) => {
 	dispatch(setSpeakingOrder(speakingOrder));
 };
 
-export const { setSpeakingOrder, banMatchPlayer, nextPlayer } = matchSlice.actions;
+export const { startDay, endDay, setSpeakingOrder, banMatchPlayer, nextPlayer, resetMatch } = matchSlice.actions;
 
 export default matchSlice.reducer;
