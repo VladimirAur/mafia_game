@@ -4,6 +4,8 @@ const initialState = {
 	speakingOrder: [],
 	bannedQueue: [],
 	spokePlayers: [],
+	nominatedPlayers: {},
+	timerMode: '',
 	currentPlayerNumber: null,
 };
 
@@ -16,13 +18,16 @@ const matchSlice = createSlice({
 		},
 
 		startDay: (state) => {
-			if (state.bannedQueue.length) {
-				const banned = state.bannedQueue[0]; // Добавить проверку на первый елемент null если есть убрать
-				state.speakingOrder = [banned, ...state.speakingOrder.filter((n) => n !== banned)];
-				state.timerMode = 'ban';
-			} else {
-				state.timerMode = 'normal';
-			}
+			state.currentPlayerNumber = state.speakingOrder[0];
+			if (state.speakingOrder[0] === null) state.speakingOrder.shift();
+
+			const banned = state.bannedQueue.shift();
+			state.timerMode = banned !== undefined ? 'ban' : 'normal';
+
+			if (banned !== undefined) state.speakingOrder.unshift(banned);
+
+			state.spokePlayers = [];
+			// state.currentPlayerNumber = null;
 		},
 		endDay: (state, action) => {
 			const dayNumber = action.payload;
@@ -34,7 +39,8 @@ const matchSlice = createSlice({
 
 			state.bannedQueue = [];
 			state.spokePlayers = [];
-			state.timerMode = 'normal';
+			state.timerMode = 'test';
+			state.currentPlayerNumber = null;
 		},
 
 		nextPlayer: (state) => {
@@ -45,6 +51,26 @@ const matchSlice = createSlice({
 			if (!state.bannedQueue.includes(player)) {
 				state.spokePlayers.push(player);
 			}
+			state.currentPlayerNumber = state.speakingOrder[0];
+		},
+		nominatePlayer: (state, action) => {
+			const speaker = state.speakingOrder[0];
+
+			if (!speaker) return; // нет активной речи
+
+			state.nominatedPlayers[speaker] = action.payload;
+			// всегда перезаписывается
+		},
+		giveSpeech: (state, action) => {
+			const player = Number(action.payload);
+
+			state.currentPlayerNumber = player;
+
+			state.speakingOrder = state.speakingOrder.filter((n) => n !== player);
+			state.nominatedPlayers = {};
+		},
+		clearCurrentPlayerNumber: (state) => {
+			state.currentPlayerNumber = null;
 		},
 		banMatchPlayer: (state, action) => {
 			const bannedNumber = action.payload;
@@ -53,8 +79,6 @@ const matchSlice = createSlice({
 			state.bannedQueue.push(bannedNumber);
 
 			state.spokePlayers = [];
-			state.currentPlayerNumber = bannedNumber;
-
 			state.timerMode = 'normal';
 		},
 		resetMatch: () => initialState,
@@ -68,6 +92,16 @@ export const startMatch = () => (dispatch, getState) => {
 	dispatch(setSpeakingOrder(speakingOrder));
 };
 
-export const { startDay, endDay, setSpeakingOrder, banMatchPlayer, nextPlayer, resetMatch } = matchSlice.actions;
+export const {
+	startDay,
+	endDay,
+	setSpeakingOrder,
+	banMatchPlayer,
+	nextPlayer,
+	resetMatch,
+	giveSpeech,
+	clearCurrentPlayerNumber,
+	nominatePlayer,
+} = matchSlice.actions;
 
 export default matchSlice.reducer;

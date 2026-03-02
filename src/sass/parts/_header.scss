@@ -23,9 +23,8 @@
 		font-size: 16px;
 		background-color: $color-secondary;
 		border-radius: 5px;
-		&--dark {
-			font-family: $ms-bd;
-			color: $bg-page;
+		&--disabled {
+			opacity: 0.5;
 		}
 		.icon-right {
 			font-size: 20px;

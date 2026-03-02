@@ -8,55 +8,59 @@ import { resetMatch, startDay } from '../redux/slices/matchSlice';
 const Header = ({ linkToNaming, linkToOptions, daySwitcher }) => {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
-    const phase = useSelector(state => state.phases.phase);
-    const dayNumber = useSelector(state => state.phases.dayNumber);
-    const players = useSelector(state => state.players.playersData);
-    const currentPlayer = useSelector(state => state.match.currentPlayerNumber);
+	const phase = useSelector((state) => state.phases.phase);
+	const dayNumber = useSelector((state) => state.phases.dayNumber);
+	const playerHasTimer = useSelector((state) => state.match.currentPlayerNumber);
+	const nominatedList = useSelector((state) => [...new Set(Object.values(state.match.nominatedPlayers))].join(', '));
 	const [active, setActive] = React.useState(false);
-
-     
 
 	const startNewGame = () => {
 		setActive(false);
 		dispatch(resetRoles());
-        dispatch(resetPhase());
-        dispatch(resetMatch());
+		dispatch(resetPhase());
+		dispatch(resetMatch());
 		navigate('/');
 	};
 
-    const switchPhase = () => {
-        const next = phase === "night" ? "day" : "night";
+	const switchPhase = () => {
+		const next = phase === 'night' ? 'day' : 'night';
+		dispatch(nextPhase());
 
-        dispatch(nextPhase());
-        
-        if (next === "night") {
-        dispatch(startDay());
-        }
-    }
+		if (next === 'night') {
+			dispatch(startDay());
+		}
+	};
 
-    const returnPhase = () => {
-        dispatch(prevPhase());
-    }
-
-       
+	const returnPhase = () => {
+		dispatch(prevPhase());
+	};
 
 	return (
 		<div className="header">
 			{linkToOptions && <Link to="/" className="header__prev icon-left2"></Link>}
-			{phase === 'Ночь' && dayNumber === 1 && linkToNaming 
-                ? (<Link to="/drawing" className="header__prev icon-left2"></Link>) 
-                : (linkToNaming && (<button className='header__prev icon-left2' onClick={returnPhase}></button>))}
+			{phase === 'Ночь' && dayNumber === 1 && linkToNaming ? (
+				<Link to="/drawing" className="header__prev icon-left2"></Link>
+			) : (
+				linkToNaming && <button className="header__prev icon-left2" onClick={returnPhase}></button>
+			)}
 			<h2 className="header__name">
 				<span className="icon-mafiya"></span>Mafia
 			</h2>
 			<div className="header__buttons">
-                {daySwitcher && (<button className={`header__switch ${phase === 'Ночь' ? 'header__switch--dark' : '' }`}
-                                        onClick={switchPhase}>{phase} {dayNumber} 
-                                    <span className='icon-right'></span>                                    
-                                </button>)}
+				{daySwitcher && (
+					<button
+						className={`header__switch ${nominatedList || playerHasTimer ? 'header__switch--disabled' : ''}`}
+						onClick={switchPhase}
+						disabled={nominatedList || playerHasTimer}
+					>
+						{phase} {dayNumber}
+						<span className="icon-right"></span>
+					</button>
+				)}
 				<button
 					className={`header__burger ${active ? 'header__burger--active' : ''}`}
-                    onClick={() => setActive(!active)}>
+					onClick={() => setActive(!active)}
+				>
 					<span className="header__burger-line"></span>
 					<span className="header__burger-line"></span>
 					<span className="header__burger-line"></span>

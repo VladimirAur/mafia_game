@@ -8,6 +8,7 @@
 	justify-content: space-between;
 	min-height: calc(100dvh - 100px);
 	box-sizing: border-box;
+
 	&__options {
 		overflow-y: auto;
 	}
@@ -16,6 +17,12 @@
 	&__list {
 		max-height: 80vh;
 		overflow-y: auto;
+	}
+	&__tip {
+		font-family: $rb-rg;
+		font-size: 16px;
+		color: $text-secondary;
+		margin-bottom: 10px;
 	}
 }
 
@@ -53,8 +60,10 @@
 		border-radius: 5px;
 		box-sizing: border-box;
 		z-index: 10;
-		&--disabled {
-			pointer-events: none;
+		&--active {
+			border: 2px solid $color-secondary;
+			cursor: pointer;
+			box-sizing: border-box;
 		}
 	}
 
@@ -120,6 +129,18 @@
 			height: 2px;
 			background: linear-gradient(to right, transparent, $accent, transparent); /* сужение к краям */
 			border-radius: 1px;
+		}
+	}
+	&__nominated {
+		padding-right: 10px;
+		font-size: 18px;
+		font-family: $ms-sb;
+		color: $text-primary;
+
+		&-icon {
+			display: inline-block;
+			margin-right: 5px;
+			transform: rotate(180deg);
 		}
 	}
 
