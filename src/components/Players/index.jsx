@@ -2,16 +2,18 @@ import React from 'react';
 import PlayersItem from './PlayersItem';
 import { useDispatch, useSelector } from 'react-redux';
 import { decrementFoul, deletePlayer, incrementFoul } from '../../redux/slices/playerSlice';
-import { banMatchPlayer, giveSpeech } from '../../redux/slices/matchSlice';
+import { banMatchPlayer, giveSpeech, startDay } from '../../redux/slices/matchSlice';
 
 const Players = () => {
 	const dispatch = useDispatch();
 	const players = useSelector((state) => state.players.playersData);
 	const currentPlayer = useSelector((state) => state.match.currentPlayerNumber);
+	const speechAllowed = useSelector((state) => state.match.speechAllowed);
 	const timerMode = useSelector((state) => state.match.timerMode);
 	const phase = useSelector((state) => state.phases.phase);
 	const nominatedList = useSelector((state) => [...new Set(Object.values(state.match.nominatedPlayers))].join(', '));
 	const isDiscussion = useSelector((state) => state.match.speakingOrder[0]);
+	const endDiscussion = useSelector((state) => state.match.endDiscussion);
 
 	const addFoul = (number) => {
 		dispatch(incrementFoul(number));
@@ -22,7 +24,6 @@ const Players = () => {
 	};
 
 	const excludePlayer = (number) => {
-		dispatch(deletePlayer(number));
 		dispatch(banMatchPlayer(number));
 	};
 
@@ -32,6 +33,14 @@ const Players = () => {
 		dispatch(giveSpeech(nominatedList[0]));
 	};
 
+	// const confirmKill = () => {
+	// 	console.log('killed');
+	// };
+
+	// const startDiscussion = () => {
+	// 	dispatch(startDay());
+	// };
+
 	// console.log(nominatedList);
 
 	return (
@@ -40,7 +49,7 @@ const Players = () => {
 				{nominatedList ? (
 					<div className="players__tip">Игроки выставленные на голосование: {nominatedList}</div>
 				) : (
-					phase === 'День' && <div className="players__tip">Нажмите на номер игрока для выставления.</div>
+					phase === 'day' && <div className="players__tip">Нажмите на номер игрока для выставления.</div>
 				)}
 
 				{players.map((player) => (
@@ -51,17 +60,23 @@ const Players = () => {
 						timerMode={timerMode}
 						addFoul={addFoul}
 						removeFoul={removeFoul}
-						excludePlayer={excludePlayer}
+						// excludePlayer={excludePlayer}
 					/>
 				))}
 			</ul>
-			{nominatedList.length === 1 && !isDiscussion ? (
+			{nominatedList.length === 1 ? (
 				<button className="roles__start" onClick={() => giveASpeach()}>
 					Речь игрока {nominatedList}
 				</button>
 			) : (
-				nominatedList.length > 1 && <button className="roles__start">Начать голосование</button>
+				nominatedList.length > 1 &&
+				!isDiscussion && <button className="roles__start">Начать голосование</button>
 			)}
+			{/* {!speechAllowed && !endDiscussion && phase === 'day' && (
+				<button className="roles__start" onClick={startDiscussion}>
+					Начать обсуждение
+				</button>
+			)} */}
 		</div>
 	);
 };

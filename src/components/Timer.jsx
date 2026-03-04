@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { clearCurrentPlayerNumber, endDay, nextPlayer } from '../redux/slices/matchSlice';
+import { clearCurrentPlayerNumber, endDay, endSpeech, nextPlayer } from '../redux/slices/matchSlice';
 
 const Timer = ({ seconds }) => {
 	const dispatch = useDispatch();
@@ -32,7 +32,7 @@ const Timer = ({ seconds }) => {
 	};
 
 	const finishSpeech = () => {
-		dispatch(clearCurrentPlayerNumber());
+		dispatch(endSpeech());
 	};
 
 	return (

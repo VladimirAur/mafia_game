@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-	phase: 'Ночь',
+	phase: 'night',
 	dayNumber: 1,
 };
 
@@ -10,19 +10,19 @@ const phaseSlice = createSlice({
 	initialState,
 	reducers: {
 		nextPhase: (state) => {
-			if (state.phase === 'Ночь') {
-				state.phase = 'День';
+			if (state.phase === 'night') {
+				state.phase = 'day';
 			} else {
-				state.phase = 'Ночь';
+				state.phase = 'night';
 				state.dayNumber += 1;
 			}
 		},
 		prevPhase(state) {
-			if (state.phase === 'День') {
-				state.phase = 'Ночь';
+			if (state.phase === 'day') {
+				state.phase = 'night';
 			} else {
 				if (state.dayNumber > 1) {
-					state.phase = 'День';
+					state.phase = 'day';
 					state.dayNumber -= 1;
 				}
 			}
