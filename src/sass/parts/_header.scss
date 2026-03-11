@@ -1,9 +1,10 @@
 .header {
 	position: relative;
+	flex: 0 0 auto;
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
-	padding: 20px 10px 0px 10px;
+	padding: 0px 10px 0px 10px;
 	background-color: $bg-card;
 	&__buttons {
 		display: flex;
@@ -17,7 +18,7 @@
 	&__switch {
 		display: flex;
 		align-items: center;
-		padding: 5px 0 5px 10px;
+		padding: 5px 5px 5px 10px;
 		font-family: $ms-rg;
 		color: $text-primary;
 		font-size: 16px;
@@ -76,6 +77,7 @@
 	}
 	// .header__name
 	&__name {
+		margin: 15px 0;
 		font-family: $ms-rg;
 		font-size: 25px;
 		color: $text-primary;

@@ -2,15 +2,17 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
 	speakingOrder: [],
-	bannedQueue: [],
 	spokePlayers: [],
+	currentPlayerNumber: null,
+	speechAllowed: false,
 	nominatedPlayers: {},
+	voting: {},
+	votedPlayers: [],
+	currentCandidate: null,
+	nominationOrder: [],
 	killedPlayer: null,
 	timerMode: '',
-	speechAllowed: false,
-	endDiscussion: false,
-	currentPlayerNumber: null,
-	status: 'empty',
+	status: 'discussion',
 };
 
 const matchSlice = createSlice({
@@ -21,61 +23,127 @@ const matchSlice = createSlice({
 			state.speakingOrder = action.payload;
 		},
 
-		startDay: (state) => {
+		nominatePlayer: (state, action) => {
+			const speaker = state.speakingOrder[0];
+
+			if (!speaker) return;
+
+			state.nominatedPlayers[speaker] = action.payload;
+		},
+
+		resetMatch: () => initialState,
+
+		killPlayer: (state, action) => {
+			state.killedPlayer = action.payload;
+			state.status = 'speech_before';
+		},
+		kickPlayer: (state, action) => {
+			state.speakingOrder = state.speakingOrder.filter((n) => n !== action.payload);
+		},
+		startSpeachBefore: (state) => {
+			state.currentPlayerNumber = state.killedPlayer;
+			state.speakingOrder = state.speakingOrder.filter((n) => n !== state.killedPlayer);
+			state.speechAllowed = true;
+		},
+		endSpeechBefore: (state) => {
+			state.currentPlayerNumber = state.speakingOrder[0];
+			state.speechAllowed = true;
+			state.killedPlayer = null;
+			state.status = 'discussion';
+		},
+		startDiscussion: (state) => {
 			state.currentPlayerNumber = state.speakingOrder[0];
 			state.speechAllowed = true;
 		},
-
-		nextPlayer: (state) => {
+		nextSpeaker: (state) => {
 			const player = state.speakingOrder.shift();
 			state.spokePlayers.push(player);
 
 			state.currentPlayerNumber = state.speakingOrder[0];
 		},
-		endDay: (state, action) => {
+		endDiscussion: (state, action) => {
 			const dayNumber = action.payload;
 			const player = state.spokePlayers.find((n) => n === dayNumber) ?? state.spokePlayers[0];
 			state.speakingOrder = [...state.spokePlayers.filter((n) => n !== player), player];
 
 			state.spokePlayers = [];
 			state.currentPlayerNumber = null;
-			state.endDiscussion = true;
 			state.speechAllowed = false;
+			state.status = 'speech_after';
+		},
+		startVoting: (state) => {
+			const candidates = [...new Set(Object.values(state.nominatedPlayers))];
+			state.voting = Object.fromEntries(candidates.map((n) => [n, 0]));
+			state.nominationOrder = candidates;
+			state.votedPlayers = [];
+			state.currentCandidate = candidates[0] || null;
+			state.status = 'voting';
 		},
 
-		nominatePlayer: (state, action) => {
-			const speaker = state.speakingOrder[0];
+		nextVotingPlayer: (state) => {
+			if (!state.currentCandidate) return;
 
-			if (!speaker) return; // нет активной речи
+			const index = state.nominationOrder.indexOf(state.currentCandidate);
 
-			state.nominatedPlayers[speaker] = action.payload;
-			// всегда перезаписывается
+			state.currentCandidate = state.nominationOrder[index + 1] ?? null;
+
+			state.votedPlayers = [];
 		},
-		giveSpeech: (state, action) => {
+		votePlayer: (state, action) => {
+			const voter = action.payload;
+
+			if (state.votedPlayers.includes(voter)) return;
+
+			state.voting[state.currentCandidate] += 1;
+			state.votedPlayers.push(voter);
+		},
+
+		startSpeechAfter: (state, action) => {
 			const player = Number(action.payload);
-
 			state.currentPlayerNumber = player;
 			state.speechAllowed = true;
 
 			state.speakingOrder = state.speakingOrder.filter((n) => n !== player);
 			state.nominatedPlayers = {};
 		},
-		endSpeech: (state) => {
-			if (state.endDiscussion) {
-				state.currentPlayerNumber = null;
-				state.speechAllowed = false;
-			} else {
-				state.currentPlayerNumber = state.speakingOrder[0];
-				state.speechAllowed = true;
-			}
+		endVoting: (state) => {
+			const votes = state.voting;
+
+			if (!votes || Object.keys(votes).length === 0) return;
+
+			// 1. Находим максимальное количество голосов
+			const maxVotes = Math.max(...Object.values(votes));
+
+			// 2. Находим всех кандидатов с максимальным количеством голосов
+			const winners = Object.keys(votes)
+				.filter((candidate) => votes[candidate] === maxVotes)
+				.map(Number); // ключи из объекта — строки, конвертим в числа
+
+			const winnersSet = new Set(winners);
+
+			state.nominatedPlayers = Object.fromEntries(
+				state.nominationOrder
+					.filter((candidate) => winnersSet.has(candidate))
+					.flatMap((candidate) =>
+						Object.entries(state.nominatedPlayers).filter(([voter, c]) => Number(c) === candidate),
+					),
+			);
+
+			state.nominationOrder = state.nominationOrder.filter((c) => winnersSet.has(c));
+
+			state.currentCandidate = null;
+			state.voting = {};
+			state.votedPlayers = [];
+			state.status = 'speech_after';
 		},
-		clearCurrentPlayerNumber: (state) => {
+		endSpeechAfter: (state) => {
 			state.currentPlayerNumber = null;
+			state.speechAllowed = false;
+			state.status = 'empty';
 		},
-		banMatchPlayer: (state, action) => {
-			state.nominatedPlayers[action.payload] = action.payload;
+		endDay: (state) => {
+			state.status = 'discussion';
 		},
-		resetMatch: () => initialState,
 	},
 });
 
@@ -87,16 +155,24 @@ export const startMatch = () => (dispatch, getState) => {
 };
 
 export const {
-	startDay,
-	endDay,
 	setSpeakingOrder,
-	banMatchPlayer,
-	nextPlayer,
 	resetMatch,
-	giveSpeech,
-	endSpeech,
-	clearCurrentPlayerNumber,
 	nominatePlayer,
+	killPlayer,
+	kickPlayer,
+	startSpeachBefore,
+	endSpeechBefore,
+	startDiscussion,
+	nextSpeaker,
+	endDiscussion,
+	prepVoting,
+	startVoting,
+	votePlayer,
+	nextVotingPlayer,
+	endVoting,
+	startSpeechAfter,
+	endSpeechAfter,
+	endDay,
 } = matchSlice.actions;
 
 export default matchSlice.reducer;

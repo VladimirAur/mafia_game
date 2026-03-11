@@ -1,17 +1,26 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { clearCurrentPlayerNumber, endDay, endSpeech, nextPlayer } from '../redux/slices/matchSlice';
+import {
+	endDiscussion,
+	endSpeechAfter,
+	endSpeechBefore,
+	nextSpeaker,
+	prepVoting,
+	startVoting,
+} from '../redux/slices/matchSlice';
 
-const Timer = ({ seconds }) => {
+const Timer = () => {
 	const dispatch = useDispatch();
 	const dayNumber = useSelector((state) => state.phases.dayNumber);
-	const timerMode = useSelector((s) => s.match.timerMode);
-	const [time, setTime] = React.useState(timerMode === 'ban' ? 20 : 10);
-	const [running, setRunning] = React.useState(false);
-	const speakingOrder = useSelector((state) => state.match.speakingOrder);
-	const currentPlayerNumber = useSelector((state) => state.match.currentPlayerNumber);
+	const { speakingOrder, status, timerMode, nominatedPlayers } = useSelector((state) => state.match);
+
 	const isLastPlayer = speakingOrder.length === 1;
-	const isSpeechNow = currentPlayerNumber !== null && !speakingOrder.includes(currentPlayerNumber);
+	const valedictory = status === 'speech_before' || status === 'speech_after';
+	const nowDiscuss = status === 'discussion' && !isLastPlayer;
+	const nominatedList = Object.keys(nominatedPlayers).length;
+
+	const [running, setRunning] = React.useState(false);
+	const [time, setTime] = React.useState(timerMode === 'ban' ? 30 : 60);
 
 	React.useEffect(() => {
 		if (!running) return;
@@ -23,16 +32,22 @@ const Timer = ({ seconds }) => {
 	const pauseTimer = () => setRunning(false);
 
 	const handleNextPlayer = () => {
-		dispatch(nextPlayer());
+		dispatch(nextSpeaker());
 	};
 
-	const handleEndDay = (dayNumber) => {
-		dispatch(nextPlayer());
-		dispatch(endDay(dayNumber));
+	const finishDiscussion = (dayNumber) => {
+		dispatch(nextSpeaker());
+		dispatch(endDiscussion(dayNumber));
+
+		if (nominatedList > 1) dispatch(startVoting());
 	};
 
 	const finishSpeech = () => {
-		dispatch(endSpeech());
+		if (status === 'speech_before') {
+			dispatch(endSpeechBefore());
+		} else {
+			dispatch(endSpeechAfter());
+		}
 	};
 
 	return (
@@ -46,18 +61,21 @@ const Timer = ({ seconds }) => {
 					<span className="icon-stop2" onClick={pauseTimer}></span>
 				</button>
 			</div>
-			{isSpeechNow ? (
+			{valedictory && (
 				<button className="timer__button timer__button-next" onClick={finishSpeech}>
 					Закончить речь
 				</button>
-			) : !isLastPlayer ? (
+			)}
+			{nowDiscuss ? (
 				<button className="timer__button timer__button-next" onClick={handleNextPlayer}>
-					Следующий Игрок
+					Следующий игрок
 				</button>
 			) : (
-				<button className="timer__button timer__button-next" onClick={() => handleEndDay(dayNumber)}>
-					Конец обсуждения
-				</button>
+				status === 'discussion' && (
+					<button className="timer__button timer__button-next" onClick={() => finishDiscussion(dayNumber)}>
+						Закончить обсуждение
+					</button>
+				)
 			)}
 		</div>
 	);

@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
 	phase: 'night',
-	dayNumber: 1,
+	dayNumber: 0,
 };
 
 const phaseSlice = createSlice({
@@ -11,19 +11,20 @@ const phaseSlice = createSlice({
 	reducers: {
 		nextPhase: (state) => {
 			if (state.phase === 'night') {
+				state.dayNumber += 1;
 				state.phase = 'day';
 			} else {
 				state.phase = 'night';
-				state.dayNumber += 1;
 			}
 		},
-		prevPhase(state) {
+
+		prevPhase: (state) => {
 			if (state.phase === 'day') {
 				state.phase = 'night';
+				state.dayNumber -= 1;
 			} else {
-				if (state.dayNumber > 1) {
+				if (state.dayNumber > 0) {
 					state.phase = 'day';
-					state.dayNumber -= 1;
 				}
 			}
 		},

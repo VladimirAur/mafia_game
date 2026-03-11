@@ -7,23 +7,23 @@ import { selectRoles, activateRole, incrementNumber, decrementNumber, resetNumbe
 import { setPlayers } from '../../redux/slices/playerSlice';
 
 const Roles = () => {
-    const dispatch = useDispatch();
-    const {mainRoles, extraRoles} = useSelector(selectRoles);
-    const totalCount = useSelector((state) => state.roles.totalCount); 
+	const dispatch = useDispatch();
+	const { mainRoles, extraRoles } = useSelector(selectRoles);
+	const totalCount = useSelector((state) => state.roles.totalCount);
 
 	const [adding, setAdding] = React.useState(false);
 	const [isFocused, setIsFocused] = React.useState(false);
 	const [value, setValue] = React.useState('');
-	 
+
 	const chooseRole = (name) => {
 		setValue(name);
 	};
-	
-    const addNewRole = (value) => {
-        dispatch(activateRole(value));
-        setAdding(false);
-	    setValue('');
-    }
+
+	const addNewRole = (value) => {
+		dispatch(activateRole(value));
+		setAdding(false);
+		setValue('');
+	};
 
 	const incRoleNumber = (name) => {
 		dispatch(incrementNumber(name));
@@ -39,41 +39,43 @@ const Roles = () => {
 
 	const buildPlayers = () => {
 		const namesArray = mainRoles
-            .flatMap(role => Array(role.number).fill(role.name))
-            .sort(() => Math.random() - 0.5);
+			.flatMap((role) => Array(role.number).fill(role.name))
+			.sort(() => Math.random() - 0.5);
 
-        const playersArray = namesArray.map((name, index) => {
-            const imgUrl = mainRoles.find((role) => role.name === name).img;
+		const playersArray = namesArray.map((name, index) => {
+			const roleData = mainRoles.find((role) => role.name === name);
 
-            return {
-                number: index + 1,
-                nickname: '',
-                role: name,
-                foul: 0,
-                ban: false,
-                img: imgUrl
-            }
-        })          
-                    
-        dispatch(setPlayers(playersArray));
+			return {
+				number: index + 1,
+				nickname: '',
+				role: name,
+				foul: 0,
+				ban: false,
+				img: roleData.img,
+				color: roleData.color,
+			};
+		});
+
+		dispatch(setPlayers(playersArray));
 	};
 
 	return (
 		<div className="roles">
 			<div className="roles__options">
-				<h2 className="roles__title"><span className='icon-equalizer2'></span> Выбор ролей</h2>
+				<h2 className="roles__title">
+					<span className="icon-equalizer2"></span> Выбор ролей
+				</h2>
 				<ul className="roles__list">
-					{mainRoles
-						.map((role) => (
-							<RolesItem
-								key={role.name}
-								role={role}
-                                id={role.id}
-								resetRole={resetRole}
-								incRoleNumber={incRoleNumber}
-								decRoleNumber={decRoleNumber}
-							/>
-						))}
+					{mainRoles.map((role) => (
+						<RolesItem
+							key={role.name}
+							role={role}
+							id={role.id}
+							resetRole={resetRole}
+							incRoleNumber={incRoleNumber}
+							decRoleNumber={decRoleNumber}
+						/>
+					))}
 				</ul>
 				{adding ? (
 					<div className="roles__popup">
@@ -92,15 +94,14 @@ const Roles = () => {
 							</span>
 							{isFocused && (
 								<ul className="roles__list">
-									{extraRoles
-										.map((role, index) => (
-											<RolesSelectItem
-												key={role.name}
-												name={role.name}
-												index={index}
-												chooseRole={chooseRole}
-											/>
-										))}
+									{extraRoles.map((role, index) => (
+										<RolesSelectItem
+											key={role.name}
+											name={role.name}
+											index={index}
+											chooseRole={chooseRole}
+										/>
+									))}
 								</ul>
 							)}
 						</div>
@@ -119,11 +120,7 @@ const Roles = () => {
 				)}
 			</div>
 
-			<Link 
-                to="/naming" 
-                className="roles__start"
-                onClick={() => buildPlayers()}
-                >
+			<Link to="/naming" className="roles__start" onClick={() => buildPlayers()}>
 				Имена игроков ({totalCount})
 			</Link>
 		</div>

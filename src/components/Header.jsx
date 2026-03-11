@@ -3,17 +3,19 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { resetRoles } from '../redux/slices/roleSlice';
 import { nextPhase, resetPhase } from '../redux/slices/phaseSlice';
-import { giveSpeech, resetMatch, startDay } from '../redux/slices/matchSlice';
+import { endDay, resetMatch, startDiscussion, startSpeachBefore } from '../redux/slices/matchSlice';
+import { resetPlayers, setOnRole } from '../redux/slices/playerSlice';
 
 const Header = ({ linkToNaming, linkToOptions, daySwitcher }) => {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
-	const phase = useSelector((state) => state.phases.phase);
-	const dayNumber = useSelector((state) => state.phases.dayNumber);
-	const speechAllowed = useSelector((state) => state.match.speechAllowed);
-	const nominatedPlayers = useSelector((state) => state.match.nominatedPlayers);
+	const { phase, dayNumber } = useSelector((state) => state.phases);
+	const { speechAllowed, nominatedPlayers, status } = useSelector((state) => state.match);
+
 	const hasNominated = Object.keys(nominatedPlayers).length > 0;
 	const phaseRu = phase === 'day' ? 'День' : 'Ночь';
+	const firstNight = daySwitcher && dayNumber === 0;
+	const regularPhase = daySwitcher && dayNumber !== 0;
 
 	const [activeBurger, setActiveBurger] = React.useState(false);
 
@@ -21,31 +23,47 @@ const Header = ({ linkToNaming, linkToOptions, daySwitcher }) => {
 		setActiveBurger(false);
 		dispatch(resetRoles());
 		dispatch(resetPhase());
+		dispatch(resetPlayers());
 		dispatch(resetMatch());
 		navigate('/');
 	};
 
 	const switchPhase = () => {
-		if (phase === 'night') dispatch(startDay());
+		if (phase === 'night' && status === 'speech_before') dispatch(startSpeachBefore());
+		if (phase === 'night' && status === 'discussion') dispatch(startDiscussion());
+		if (phase === 'day' && (status === 'speech_after' || status === 'empty')) dispatch(endDay());
+
 		dispatch(nextPhase());
+	};
+
+	const showRole = () => {
+		dispatch(setOnRole(true));
+		setTimeout(() => {
+			dispatch(setOnRole(false));
+		}, 1000);
 	};
 
 	return (
 		<div className="header">
 			{linkToOptions && <Link to="/" className="header__prev icon-left2"></Link>}
 			{linkToNaming && <Link to="/drawing" className="header__prev icon-left2"></Link>}
-			<h2 className="header__name">
+			<h2 className="header__name" onClick={() => showRole()}>
 				<span className="icon-mafiya"></span>Mafia
 			</h2>
 			<div className="header__buttons">
-				{daySwitcher && (
+				{regularPhase && (
 					<button
-						className={`header__switch ${speechAllowed ? 'header__switch--disabled' : ''}`}
+						className={`header__switch ${speechAllowed || hasNominated ? 'header__switch--disabled' : ''}`}
 						onClick={switchPhase}
-						disabled={speechAllowed}
+						disabled={speechAllowed || hasNominated}
 					>
 						{phaseRu} {dayNumber}
 						<span className="icon-right"></span>
+					</button>
+				)}
+				{firstNight && (
+					<button className="header__switch" onClick={switchPhase}>
+						Ночь знакомств
 					</button>
 				)}
 				<button

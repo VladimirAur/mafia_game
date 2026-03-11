@@ -1,12 +1,13 @@
 .players {
 	position: relative;
 	padding: 10px;
-	// display: grid;
-	// grid-template-rows: 1fr auto;
+	flex: 1;
+
+	overflow: hidden;
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
-	min-height: calc(100dvh - 100px);
+	// min-height: calc(100dvh - 100px);
 	box-sizing: border-box;
 
 	&__options {
@@ -15,7 +16,7 @@
 	// background-color: #f8fafa;
 	// .players__list
 	&__list {
-		max-height: 80vh;
+		flex: 1;
 		overflow-y: auto;
 	}
 	&__tip {
@@ -23,20 +24,27 @@
 		font-size: 16px;
 		color: $text-secondary;
 		margin-bottom: 10px;
+		span {
+			font-size: 14px;
+			color: $accent;
+		}
 	}
 	&__popup {
-		position: absolute;
-		right: 0;
-		top: -92px;
+		position: fixed;
+		left: 50%;
+		transform: translateX(-50%);
+		top: 0;
 		display: flex;
 		flex-direction: column;
 		justify-content: center;
 		width: 100%;
-		min-height: 100dvh;
+		max-width: 500px;
+		min-height: calc(100dvh);
 		padding: 10px;
 		background-color: rgba(41, 43, 44, 0.9);
 		box-sizing: border-box;
 		z-index: 99;
+
 		&-set {
 			display: flex;
 			flex-direction: column;
@@ -50,6 +58,34 @@
 			color: $text-primary;
 		}
 	}
+
+	// .players__advert
+	&__advert {
+		margin-bottom: 10px;
+		font-size: 26px;
+		font-family: $ms-sb;
+		color: $text-secondary;
+	}
+
+	// .players__caution
+	&__caution {
+		margin-bottom: 30px;
+		font-size: 20px;
+		font-family: $ms-rg;
+		color: $text-secondary;
+	}
+
+	// .players__text
+	&__text {
+		margin-bottom: 10px;
+		font-size: 16px;
+		font-family: $rb-rg;
+		color: $text-secondary;
+		&:last-of-type {
+			margin-bottom: 40px;
+		}
+	}
+
 	&__btn-confirm {
 		// align-self: flex-start;
 		display: inline-block;
@@ -62,7 +98,6 @@
 		background-color: $color-primary;
 		border-radius: 10px;
 		cursor: pointer;
-
 		&:active {
 			background-color: $color-secondary;
 		}
@@ -72,21 +107,21 @@
 
 .player {
 	margin-bottom: 5px;
-	&--disabled {
-		opacity: 0.5;
-	}
 	&--naming {
 		position: relative;
 		display: flex;
 		align-items: center;
 	}
 	&:last-child {
-		margin-bottom: 70px;
+		margin-bottom: 0;
 	}
 	&__item {
 		position: relative;
 		display: flex;
 		align-items: center;
+		&--disabled {
+			opacity: 0.5;
+		}
 	}
 	// .player__number
 	&__number {
@@ -105,9 +140,12 @@
 		box-sizing: border-box;
 		z-index: 10;
 		&--active {
-			border: 2px solid $color-secondary;
+			border: 1px solid $color-secondary;
 			cursor: pointer;
 			box-sizing: border-box;
+		}
+		&--voting {
+			border: 1px solid $accent;
 		}
 	}
 
@@ -151,8 +189,11 @@
 
 	// .player__status
 	&__status {
-		display: flex;
+		display: none;
 		align-items: center;
+		&--active {
+			display: flex;
+		}
 	}
 
 	// .player__role
@@ -167,8 +208,8 @@
 		&::after {
 			content: '';
 			position: absolute;
-			left: -15px;
-			right: -15px;
+			left: -10px;
+			right: -10px;
 			bottom: -1px;
 			height: 2px;
 			background: linear-gradient(to right, transparent, $accent, transparent); /* сужение к краям */
@@ -186,6 +227,12 @@
 			margin-right: 5px;
 			transform: rotate(180deg);
 		}
+	}
+	&__votes {
+		padding-right: 10px;
+		font-size: 14px;
+		font-family: $rb-rg;
+		color: $text-primary;
 	}
 
 	// .player__foll
@@ -205,7 +252,7 @@
 	// .player__foll-btn
 	&__foll-btn {
 		font-family: $rb-rg;
-		// padding: 12px;
+		padding: 10px;
 		height: 49px;
 		font-size: 10px;
 		color: $text-primary;
