@@ -1,9 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { act } from 'react';
 
 const initialState = {
 	playersData: [],
-	status: '',
+	gameStatus: '',
 	onRole: false,
 };
 
@@ -22,12 +21,12 @@ const playerSlice = createSlice({
 		incrementFoul(state, action) {
 			const player = state.playersData.find((player) => player.number === action.payload);
 			if (player.foul < 4) player.foul += 1;
-			player.ban = player.foul >= 4;
+			// player.ban = player.foul >= 4;
 		},
 		decrementFoul(state, action) {
 			const player = state.playersData.find((player) => player.number === action.payload);
 			if (player.foul > 0) player.foul -= 1;
-			player.ban = player.foul >= 4;
+			// player.ban = player.foul >= 4;
 		},
 		deletePlayer(state, action) {
 			const deleteNumber = Number(action.payload);
@@ -41,24 +40,35 @@ const playerSlice = createSlice({
 			const redCount = activePlayers.filter((p) => p.color === 'red').length;
 
 			if (blackCount === 0 && redCount > 0) {
-				state.status = 'winner_red'; // все черные убраны
+				state.gameStatus = 'winner_red'; // все черные убраны
 			} else if (blackCount > 0 && redCount > 0 && blackCount === redCount) {
-				state.status = 'winner_black'; // поровну → черные победили
+				state.gameStatus = 'winner_black'; // поровну → черные победили
 			} else {
-				state.status = 'in_game'; // игра продолжается
+				state.gameStatus = 'in_game'; // игра продолжается
 			}
 		},
 		loseByPlayer: (state, action) => {
 			const player = action.payload; // объект игрока или его number/id
-			state.status = player.color === 'black' ? 'winner_red' : 'winner_black';
+			state.gameStatus = player.color === 'black' ? 'winner_red' : 'winner_black';
 		},
-		clearStatus: (state) => {
-			state.status = '';
+		clearGameStatus: (state) => {
+			state.gameStatus = '';
 		},
 		setOnRole: (state, action) => {
 			state.onRole = action.payload;
 		},
 		resetPlayers: () => initialState,
+		// ТЕСТ ТЕСТ
+		setPlayerRole: (state, action) => {
+			const { number, role } = action.payload;
+
+			const player = state.playersData.find((p) => p.number === number);
+			if (player) {
+				player.role = role.name;
+				player.img = role.img;
+				player.color = role.color;
+			}
+		},
 	},
 });
 
@@ -70,8 +80,9 @@ export const {
 	deletePlayer,
 	checkWinner,
 	loseByPlayer,
-	clearStatus,
+	clearGameStatus,
 	setOnRole,
 	resetPlayers,
+	setPlayerRole,
 } = playerSlice.actions;
 export default playerSlice.reducer;

@@ -1,81 +1,157 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
+	disableNomination,
+	enableNomination,
 	endDiscussion,
 	endSpeechAfter,
 	endSpeechBefore,
+	endVoting,
 	nextSpeaker,
-	prepVoting,
-	startVoting,
+	nextTieSpeaker,
+	nextVotingPlayer,
 } from '../redux/slices/matchSlice';
+import { deletePlayer } from '../redux/slices/playerSlice';
 
 const Timer = () => {
 	const dispatch = useDispatch();
-	const dayNumber = useSelector((state) => state.phases.dayNumber);
-	const { speakingOrder, status, timerMode, nominatedPlayers } = useSelector((state) => state.match);
+	const { speakingOrder, status, currentPlayerNumber, currentCandidate, candidates } = useSelector(
+		(state) => state.match,
+	);
+	// Проверки для ежедневных монологов
+	const nowDiscussion = status === 'discussion_off' || status === 'discussion_on';
+	const isLastSpeaker = speakingOrder.length === 1;
+	// Проверка для речей после исключения
+	const nowSingleSpeech = status === 'speech_before' || status === 'speech_after';
+	// Проверки для голосования
+	const nowVoting = status === 'voting';
+	const isLastCandidate = currentCandidate === candidates[candidates.length - 1]?.candidate;
+	// Проверки для речей во время голосования
+	const nowTieSpeech = status === 'tie_speech';
+	const isLastTieSpeaker = currentPlayerNumber === candidates[candidates.length - 1]?.candidate;
 
-	const isLastPlayer = speakingOrder.length === 1;
-	const valedictory = status === 'speech_before' || status === 'speech_after';
-	const nowDiscuss = status === 'discussion' && !isLastPlayer;
-	const nominatedList = Object.keys(nominatedPlayers).length;
+	const getSecondsByStatus = {
+		discussion_off: 60,
+		discussion_on: 60,
+		voting: 2,
+		tie_speech: 30,
+	};
+	const seconds = getSecondsByStatus[status] ?? 30;
 
-	const [running, setRunning] = React.useState(false);
-	const [time, setTime] = React.useState(timerMode === 'ban' ? 30 : 60);
+	const [time, setTime] = React.useState(seconds);
+	const [timerOn, setTimerOn] = React.useState(false);
 
 	React.useEffect(() => {
-		if (!running) return;
-		const id = setInterval(() => setTime((t) => (t > 0 ? t - 1 : (setRunning(false), 0))), 1000);
-		return () => clearInterval(id);
-	}, [running]);
+		if (!timerOn) return;
 
-	const startTimer = () => setRunning(true);
-	const pauseTimer = () => setRunning(false);
+		const id = setInterval(() => {
+			setTime((t) => {
+				if (t <= 1) {
+					clearInterval(id);
+					if (status === 'discussion_on') {
+						dispatch(disableNomination());
+					}
+					setTimerOn(false); // останавливаем таймер
+					return 0;
+				}
+				return t - 1;
+			});
+		}, 1000);
+		return () => clearInterval(id);
+	}, [timerOn, dispatch]);
+
+	const startTimer = () => {
+		setTimerOn(true);
+		if (status === 'discussion_off') dispatch(enableNomination());
+	};
 
 	const handleNextPlayer = () => {
+		setTime(seconds);
+		setTimerOn(false);
 		dispatch(nextSpeaker());
 	};
 
-	const finishDiscussion = (dayNumber) => {
+	const finishDiscussion = () => {
 		dispatch(nextSpeaker());
-		dispatch(endDiscussion(dayNumber));
-
-		if (nominatedList > 1) dispatch(startVoting());
+		dispatch(endDiscussion());
 	};
 
-	const finishSpeech = () => {
+	const finishSpeech = (playerNumber) => {
 		if (status === 'speech_before') {
 			dispatch(endSpeechBefore());
+			setTimerOn(false);
 		} else {
 			dispatch(endSpeechAfter());
+			dispatch(deletePlayer(playerNumber));
+			setTimerOn(false);
 		}
+	};
+
+	const handleNextTieSpeaker = () => {
+		setTime(seconds);
+		setTimerOn(false);
+		dispatch(nextTieSpeaker());
+	};
+	const changeCandidate = () => {
+		setTime(seconds);
+		setTimerOn(false);
+		dispatch(nextVotingPlayer());
+	};
+
+	const finishElection = () => {
+		setTimerOn(false);
+		dispatch(endVoting());
 	};
 
 	return (
 		<div className="player__timer timer">
+			{currentPlayerNumber && (
+				<div className="timer__text">
+					{status === 'speech_after' || status === 'speech_before' ? 'Прощальная речь игрока' : 'Речь игрока'}{' '}
+					{currentPlayerNumber}
+				</div>
+			)}
+			{currentCandidate && <div className="timer__text">Голосование за игрока {currentCandidate}</div>}
 			<div className="timer__control">
 				<div className="timer__count">{time} сек</div>
 				<button className="timer__button" onClick={startTimer}>
 					<span className="icon-play3"></span>
 				</button>
-				<button className="timer__button">
-					<span className="icon-stop2" onClick={pauseTimer}></span>
-				</button>
 			</div>
-			{valedictory && (
-				<button className="timer__button timer__button-next" onClick={finishSpeech}>
+			{nowSingleSpeech && (
+				<button className="timer__button" onClick={() => finishSpeech(currentPlayerNumber)}>
 					Закончить речь
 				</button>
 			)}
-			{nowDiscuss ? (
-				<button className="timer__button timer__button-next" onClick={handleNextPlayer}>
+			{nowDiscussion && !isLastSpeaker && (
+				<button className="timer__button" onClick={handleNextPlayer}>
 					Следующий игрок
 				</button>
-			) : (
-				status === 'discussion' && (
-					<button className="timer__button timer__button-next" onClick={() => finishDiscussion(dayNumber)}>
-						Закончить обсуждение
-					</button>
-				)
+			)}
+			{nowDiscussion && isLastSpeaker && (
+				<button className="timer__button" onClick={finishDiscussion}>
+					Закончить обсуждение
+				</button>
+			)}
+			{nowVoting && !isLastCandidate && (
+				<button className="timer__button" onClick={changeCandidate}>
+					Следующий игрок
+				</button>
+			)}
+			{isLastCandidate && (
+				<button className="timer__button" onClick={finishElection}>
+					Закончить голосование
+				</button>
+			)}
+			{nowTieSpeech && !isLastTieSpeaker && (
+				<button className="timer__button" onClick={handleNextTieSpeaker}>
+					Следующий игрок
+				</button>
+			)}
+			{nowTieSpeech && isLastTieSpeaker && (
+				<button className="timer__button" onClick={handleNextTieSpeaker}>
+					Повторное голосование
+				</button>
 			)}
 		</div>
 	);

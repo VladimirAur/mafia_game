@@ -14,6 +14,7 @@ const Roles = () => {
 	const [adding, setAdding] = React.useState(false);
 	const [isFocused, setIsFocused] = React.useState(false);
 	const [value, setValue] = React.useState('');
+	const [sportGame, setSportGame] = React.useState(true);
 
 	const chooseRole = (name) => {
 		setValue(name);
@@ -62,9 +63,19 @@ const Roles = () => {
 	return (
 		<div className="roles">
 			<div className="roles__options">
-				<h2 className="roles__title">
-					<span className="icon-equalizer2"></span> Выбор ролей
-				</h2>
+				<div className="roles__head">
+					<h2 className="roles__title">
+						<span className="icon-equalizer2"></span> Выбор ролей
+					</h2>
+					<div className="roles__choose">
+						<div className="roles__choose-text">Sport</div>
+						<div
+							className={`roles__switch ${sportGame ? 'roles__switch--active' : ''}`}
+							onClick={() => setSportGame(!sportGame)}
+						></div>
+					</div>
+				</div>
+
 				<ul className="roles__list">
 					{mainRoles.map((role) => (
 						<RolesItem
@@ -114,9 +125,11 @@ const Roles = () => {
 						</button>
 					</div>
 				) : (
-					<button className="roles__add" onClick={() => setAdding(true)}>
-						+ Добавить роль
-					</button>
+					!sportGame && (
+						<button className="roles__add" onClick={() => setAdding(true)}>
+							+ Добавить роль
+						</button>
+					)
 				)}
 			</div>
 

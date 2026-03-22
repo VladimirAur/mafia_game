@@ -1,24 +1,42 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import Timer from '../Timer';
-import { nominatePlayer, killPlayer, kickPlayer, votePlayer } from '../../redux/slices/matchSlice';
+import {
+	nominatePlayer,
+	kickPlayer,
+	votePlayer,
+	killPlayer,
+	reassignVote,
+	voteRemoveAll,
+} from '../../redux/slices/matchSlice';
 import { deletePlayer, incrementFoul, decrementFoul, loseByPlayer } from '../../redux/slices/playerSlice';
+import PlayersConfirmPopup from './PlayersConfirmPopup';
+import PlayersActionsPopup from './PlayersActionsPopup';
+import PlayersFouls from './PlayersFouls';
+import PlayersFoulsPopup from './PlayersFoulsPopup';
 
-const PlayersItem = ({ number, nickname, role, foul, ban, hasTimer }) => {
+const PlayersItem = ({ number, nickname, role, foul, ban, hasTimer, candidate }) => {
 	const dispatch = useDispatch();
-	const { phase, dayNumber } = useSelector((state) => state.phases);
-	const { killedPlayer, status, currentCandidate, nominatedPlayers, voting } = useSelector((state) => state.match);
+	const { phase, status, nominatedPlayers, candidates, removeAllVotes } = useSelector((state) => state.match);
 	const onRole = useSelector((state) => state.players.onRole);
 
 	const nominatedNumber = nominatedPlayers[number];
-	const currentCandidateNumber = Number(currentCandidate);
-	const nowDiscussion = status === 'discussion' && phase === 'day';
-	const hasNominee = phase === 'day' && nominatedNumber && status !== 'voting';
-	const inVoting = number in voting && voting[number] > 0;
-	const votes = voting[number];
-	const firstNight = dayNumber === 0;
+	const nowDiscussion = status === 'discussion_on';
+	const nowVoting = status === 'voting';
+	const nowRemoveAllVoting = status === 'removeall_vote';
+	const nowRegularStatus = !nowDiscussion && !nowVoting && !nowRemoveAllVoting;
+	const hasNominee = nominatedNumber && (status === 'discussion_on' || status === 'discussion_off');
+	const hasVoted = candidates.some((c) => c.votes.includes(number));
+	const hasRemoveAllVoted = removeAllVotes.includes(number);
+
+	// Блок информации о том кто проголосовал за игрока и к-во голосов
+	const playerVotesData = candidates.find((c) => c.candidate === number);
+	const playerHasVotes = playerVotesData?.votes?.length > 0;
+	const playerTotalVotes = playerVotesData?.votes?.length || 0;
+	const playerVoters = playerVotesData?.votes?.join(', ') || '';
 
 	const [activePopup, setActivePopup] = React.useState(false);
+	const [confirmPopup, setConfirmPopup] = React.useState('empty');
+	const [showCandidates, setShowCandidates] = React.useState(false);
 
 	const addFoul = (number) => {
 		dispatch(incrementFoul(number));
@@ -39,11 +57,6 @@ const PlayersItem = ({ number, nickname, role, foul, ban, hasTimer }) => {
 	const openPopup = () => {
 		setActivePopup(true);
 	};
-	const excludePlayer = (number) => {
-		dispatch(killPlayer(number));
-		dispatch(deletePlayer(number));
-		setActivePopup(false);
-	};
 
 	const removePlayer = (number) => {
 		dispatch(deletePlayer(number));
@@ -55,6 +68,27 @@ const PlayersItem = ({ number, nickname, role, foul, ban, hasTimer }) => {
 		dispatch(votePlayer(number));
 	};
 
+	const giveVoiceForRemove = (number) => {
+		dispatch(voteRemoveAll(number));
+	};
+
+	const onConfirm = (type) => {
+		setActivePopup(false);
+		setConfirmPopup(type);
+	};
+	const offConfirm = () => {
+		setConfirmPopup('empty');
+	};
+	const killByMafia = (number) => {
+		dispatch(killPlayer(number));
+		dispatch(deletePlayer(number));
+		setActivePopup(false);
+	};
+	const revote = (number, candidate) => {
+		dispatch(reassignVote({ voter: number, newCandidate: candidate }));
+		setShowCandidates(false);
+		setActivePopup(false);
+	};
 	const teamLoss = (number) => {
 		dispatch(loseByPlayer(number));
 	};
@@ -62,7 +96,7 @@ const PlayersItem = ({ number, nickname, role, foul, ban, hasTimer }) => {
 	return (
 		<li className={`player ${ban ? 'player--disabled' : ''}`}>
 			<div className={`player__item ${ban ? 'player__item--disabled' : ''}`}>
-				{nowDiscussion ? (
+				{nowDiscussion && (
 					<button
 						className={`player__number ${nowDiscussion && !ban ? 'player__number--active' : ''}`}
 						onClick={() => handleNominatePlayer(number)}
@@ -70,17 +104,30 @@ const PlayersItem = ({ number, nickname, role, foul, ban, hasTimer }) => {
 					>
 						{number}
 					</button>
-				) : (
+				)}
+				{nowVoting && (
 					<button
-						className={`player__number ${currentCandidateNumber === number ? 'player__number--voting' : ''}`}
+						className={`player__number ${!hasVoted ? 'player__number--active' : ''}`}
 						onClick={() => giveVoice(number)}
 						disabled={ban}
 					>
 						{number}
 					</button>
 				)}
+				{nowRemoveAllVoting && (
+					<button
+						className={`player__number ${!hasRemoveAllVoted ? 'player__number--active' : ''}`}
+						onClick={() => giveVoiceForRemove(number)}
+						disabled={ban}
+					>
+						{number}
+					</button>
+				)}
+				{nowRegularStatus && <button className="player__number">{number}</button>}
 
-				<div className="player__desc">
+				<div
+					className={`player__desc ${hasTimer ? 'player__desc--active' : ''} ${candidate ? 'player__desc--voting' : ''}`}
+				>
 					<div className="player__name">{nickname ? nickname : 'Игрок'}</div>
 					{phase === 'night' && (
 						<div className={`player__status ${onRole ? 'player__status--active ' : ''}`}>
@@ -93,62 +140,44 @@ const PlayersItem = ({ number, nickname, role, foul, ban, hasTimer }) => {
 							{nominatedNumber}
 						</div>
 					)}
-					{inVoting && <div className="player__votes">Голосов: {votes}</div>}
-				</div>
-				{phase === 'day' && (
-					<div className="player__foll">
-						<div className="player__foll-count">
-							<input type="text" value={foul > 0 ? foul : 'Ф'} className="player__foll-number" readOnly />
-							<button className="player__foll-btn player__foll-right" onClick={() => addFoul(number)}>
-								<span className="icon-plus"></span>
-							</button>
-						</div>
-					</div>
-				)}
 
-				<button className="player__foll-btn player__foll-del" onClick={openPopup} disabled={killedPlayer}>
+					{playerHasVotes && (
+						<div className="player__votes-info">
+							<div className="player__votes">Голосов: {playerTotalVotes}</div>
+							<div className="player__votes">{playerVoters}</div>
+						</div>
+					)}
+				</div>
+				<PlayersFouls number={number} foul={foul} addFoul={addFoul} />
+				<button className="player__foll-btn player__foll-del" onClick={openPopup} disabled={ban}>
 					<span className="icon-close"></span>
 				</button>
 			</div>
-			{hasTimer && <Timer />}
-			{activePopup && phase === 'night' && (
-				<div className="players__popup">
-					<button className="players__popup-close" onClick={closePopup}>
-						<span className="icon-close"></span>
-					</button>
-					<div className="players__popup-set">
-						{!firstNight && (
-							<button className="players__btn-confirm" onClick={() => excludePlayer(number)}>
-								Убийство Мафией
-							</button>
-						)}
 
-						<button className="players__btn-confirm" onClick={() => removePlayer(number)}>
-							Дисквалификация
-						</button>
-						<button className="players__btn-confirm" onClick={() => teamLoss(number)}>
-							Поражение команды
-						</button>
-					</div>
-				</div>
+			{activePopup && (
+				<PlayersActionsPopup
+					number={number}
+					removeFoul={removeFoul}
+					onConfirm={onConfirm}
+					closePopup={closePopup}
+					revote={revote}
+					showCandidates={showCandidates}
+					setShowCandidates={setShowCandidates}
+				/>
 			)}
-			{activePopup && phase === 'day' && (
-				<div className="players__popup">
-					<button className="players__popup-close" onClick={closePopup}>
-						<span className="icon-close"></span>
-					</button>
-					<div className="players__popup-set">
-						<button className="players__btn-confirm" onClick={() => removeFoul(number)}>
-							Убрать 1 Фол
-						</button>
-						<button className="players__btn-confirm" onClick={() => removePlayer(number)}>
-							Дисквалификация
-						</button>
-						<button className="players__btn-confirm" onClick={() => teamLoss(number)}>
-							Поражение команды
-						</button>
-					</div>
-				</div>
+			{foul > 3 && ban !== true && (
+				<PlayersFoulsPopup number={number} removePlayer={removePlayer} removeFoul={removeFoul} />
+			)}
+			{confirmPopup !== 'empty' && (
+				<PlayersConfirmPopup
+					number={number}
+					confirmPopup={confirmPopup}
+					offConfirm={offConfirm}
+					setActivePopup={setActivePopup}
+					removePlayer={removePlayer}
+					killByMafia={killByMafia}
+					teamLoss={teamLoss}
+				/>
 			)}
 		</li>
 	);

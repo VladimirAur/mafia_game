@@ -1,18 +1,20 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
+	phase: 'night',
+	dayNumber: 0,
 	speakingOrder: [],
 	spokePlayers: [],
 	currentPlayerNumber: null,
-	speechAllowed: false,
+	removedDuringDiscussion: false,
 	nominatedPlayers: {},
-	voting: {},
-	votedPlayers: [],
 	currentCandidate: null,
-	nominationOrder: [],
+	candidates: [],
 	killedPlayer: null,
-	timerMode: '',
-	status: 'discussion',
+	noKillNights: 0,
+	isTieRepeat: false,
+	removeAllVotes: [],
+	status: 'idle',
 };
 
 const matchSlice = createSlice({
@@ -21,129 +23,294 @@ const matchSlice = createSlice({
 	reducers: {
 		setSpeakingOrder: (state, action) => {
 			state.speakingOrder = action.payload;
+			state.status = 'idle';
 		},
+		switchPhase: (state) => {
+			if (state.phase === 'night') {
+				state.phase = 'day';
+				state.dayNumber += 1;
 
-		nominatePlayer: (state, action) => {
-			const speaker = state.speakingOrder[0];
+				switch (true) {
+					case state.status === 'speech_before':
+						state.currentPlayerNumber = state.killedPlayer;
+						break;
 
-			if (!speaker) return;
+					case state.status === 'idle':
+						state.status = 'discussion_off';
+						state.currentPlayerNumber = state.speakingOrder[0] || null;
+						break;
+				}
+			} else {
+				if (state.status === 'speech_after' || state.status === 'idle') {
+					state.spokePlayers = [];
+					state.currentPlayerNumber = null;
+					state.candidates = [];
+				}
 
-			state.nominatedPlayers[speaker] = action.payload;
-		},
-
-		resetMatch: () => initialState,
-
-		killPlayer: (state, action) => {
-			state.killedPlayer = action.payload;
-			state.status = 'speech_before';
+				state.phase = 'night';
+			}
 		},
 		kickPlayer: (state, action) => {
 			state.speakingOrder = state.speakingOrder.filter((n) => n !== action.payload);
+			state.spokePlayers = state.spokePlayers.filter((n) => n !== action.payload);
+			state.removedDuringDiscussion = true;
+			state.noKillNights = 0;
 		},
-		startSpeachBefore: (state) => {
-			state.currentPlayerNumber = state.killedPlayer;
-			state.speakingOrder = state.speakingOrder.filter((n) => n !== state.killedPlayer);
-			state.speechAllowed = true;
+
+		killPlayer: (state, action) => {
+			state.killedPlayer = action.payload;
+			state.speakingOrder = state.speakingOrder.filter((n) => n !== action.payload);
+			state.status = 'speech_before';
+			state.noKillNights = 0;
 		},
+
 		endSpeechBefore: (state) => {
-			state.currentPlayerNumber = state.speakingOrder[0];
-			state.speechAllowed = true;
+			state.currentPlayerNumber = state.speakingOrder[0] || null;
+			state.status = 'discussion_off';
 			state.killedPlayer = null;
-			state.status = 'discussion';
 		},
 		startDiscussion: (state) => {
-			state.currentPlayerNumber = state.speakingOrder[0];
-			state.speechAllowed = true;
+			state.currentPlayerNumber = state.speakingOrder[0] || null; // первый говорящий
+			state.status = 'discussion_off'; // обсуждение началось, но таймер пока не включен
+		},
+		enableNomination: (state) => {
+			state.status = 'discussion_on';
+		},
+
+		disableNomination: (state) => {
+			state.status = 'discussion_off';
+		},
+		nominatePlayer: (state, action) => {
+			const speaker = state.speakingOrder[0];
+			if (state.status !== 'discussion_on') return;
+			state.nominatedPlayers[speaker] = action.payload;
 		},
 		nextSpeaker: (state) => {
-			const player = state.speakingOrder.shift();
-			state.spokePlayers.push(player);
+			const current = state.currentPlayerNumber;
+			const exists = state.speakingOrder.includes(current);
 
-			state.currentPlayerNumber = state.speakingOrder[0];
-		},
-		endDiscussion: (state, action) => {
-			const dayNumber = action.payload;
-			const player = state.spokePlayers.find((n) => n === dayNumber) ?? state.spokePlayers[0];
-			state.speakingOrder = [...state.spokePlayers.filter((n) => n !== player), player];
+			// удаляем текущего из speakingOrder
+			state.speakingOrder = state.speakingOrder.filter((n) => n !== current);
 
-			state.spokePlayers = [];
-			state.currentPlayerNumber = null;
-			state.speechAllowed = false;
-			state.status = 'speech_after';
+			// добавляем в spokePlayers только если он реально был в очереди
+			if (exists) {
+				state.spokePlayers.push(current);
+			}
+
+			state.currentPlayerNumber = state.speakingOrder[0] || null;
+			state.status = 'discussion_off';
 		},
-		startVoting: (state) => {
-			const candidates = [...new Set(Object.values(state.nominatedPlayers))];
-			state.voting = Object.fromEntries(candidates.map((n) => [n, 0]));
-			state.nominationOrder = candidates;
-			state.votedPlayers = [];
-			state.currentCandidate = candidates[0] || null;
-			state.status = 'voting';
+		endDiscussion: (state) => {
+			const candidates = [];
+			for (const setter of Object.keys(state.nominatedPlayers)) {
+				const candidate = state.nominatedPlayers[setter];
+				if (!candidates.some((c) => c.candidate === candidate)) {
+					candidates.push({ candidate: Number(candidate), votes: [] });
+				}
+			}
+
+			switch (true) {
+				case state.removedDuringDiscussion:
+					state.nominatedPlayers = {};
+					state.status = 'idle';
+					break;
+
+				case candidates.length > 1:
+					state.status = 'voting';
+					state.currentCandidate = candidates[0].candidate;
+					state.candidates = candidates;
+					break;
+
+				case candidates.length === 1:
+					state.status = 'speech_after';
+					state.currentPlayerNumber = candidates[0].candidate;
+					break;
+
+				default:
+					state.nominatedPlayers = {};
+					state.status = 'idle';
+			}
+
+			const alive = [...state.spokePlayers].sort((a, b) => a - b);
+
+			// игрок, с которого начинаем
+			const startPlayer = state.dayNumber + 1;
+			// находим его индекс
+			const startIndex = alive.indexOf(startPlayer);
+			// если вдруг такого нет (например выбыл) — берём ближайшего следующего
+			const safeIndex = startIndex !== -1 ? startIndex : 0;
+			state.speakingOrder = [...alive.slice(safeIndex), ...alive.slice(0, safeIndex)];
+
+			if (state.status !== 'speech_after') {
+				state.currentPlayerNumber = null;
+			}
+			state.removedDuringDiscussion = false;
 		},
 
 		nextVotingPlayer: (state) => {
-			if (!state.currentCandidate) return;
+			if (!state.currentCandidate || !state.candidates.length) return;
 
-			const index = state.nominationOrder.indexOf(state.currentCandidate);
+			// находим индекс текущего кандидата
+			const index = state.candidates.findIndex((c) => c.candidate === state.currentCandidate);
 
-			state.currentCandidate = state.nominationOrder[index + 1] ?? null;
-
-			state.votedPlayers = [];
+			// переключаем на следующего кандидата или ставим null
+			state.currentCandidate = state.candidates[index + 1]?.candidate || null;
 		},
 		votePlayer: (state, action) => {
 			const voter = action.payload;
 
-			if (state.votedPlayers.includes(voter)) return;
-
-			state.voting[state.currentCandidate] += 1;
-			state.votedPlayers.push(voter);
+			// 1. Проверяем, не голосовал ли уже этот игрок
+			const alreadyVoted = state.candidates.some((c) => c.votes.includes(voter));
+			if (alreadyVoted) return;
+			// 2. Находим текущего кандидата
+			const candidate = state.candidates.find((c) => c.candidate === state.currentCandidate);
+			if (!candidate) return;
+			// 3. Добавляем голос
+			candidate.votes.push(voter);
 		},
+		nextTieSpeaker: (state) => {
+			const index = state.candidates.findIndex((c) => c.candidate === state.currentPlayerNumber);
 
-		startSpeechAfter: (state, action) => {
-			const player = Number(action.payload);
-			state.currentPlayerNumber = player;
-			state.speechAllowed = true;
+			const next = state.candidates[index + 1]?.candidate;
 
-			state.speakingOrder = state.speakingOrder.filter((n) => n !== player);
-			state.nominatedPlayers = {};
+			if (next !== undefined) {
+				state.currentPlayerNumber = next;
+			} else {
+				state.currentPlayerNumber = null;
+				state.currentCandidate = state.candidates[0]?.candidate;
+				state.status = 'voting';
+			}
 		},
 		endVoting: (state) => {
-			const votes = state.voting;
+			if (!state.candidates.length) return;
 
-			if (!votes || Object.keys(votes).length === 0) return;
+			const allPlayers = state.speakingOrder.concat(...state.candidates.flatMap((c) => c.votes));
 
-			// 1. Находим максимальное количество голосов
-			const maxVotes = Math.max(...Object.values(votes));
+			const votedSoFar = state.candidates.flatMap((c) => c.votes);
+			const notVoted = allPlayers.filter((n) => !votedSoFar.includes(n));
 
-			// 2. Находим всех кандидатов с максимальным количеством голосов
-			const winners = Object.keys(votes)
-				.filter((candidate) => votes[candidate] === maxVotes)
-				.map(Number); // ключи из объекта — строки, конвертим в числа
+			const lastCandidate = state.candidates[state.candidates.length - 1];
+			lastCandidate.votes.push(...notVoted);
 
-			const winnersSet = new Set(winners);
+			state.status = 'counting_votes';
+			state.currentCandidate = null;
+		},
+		reassignVote: (state, action) => {
+			const { voter, newCandidate } = action.payload;
+			console.log(voter, newCandidate);
 
+			// Удаляем голос у старого кандидата
+			const oldCandidate = state.candidates.find((c) => c.votes.includes(voter));
+			if (oldCandidate) {
+				oldCandidate.votes = oldCandidate.votes.filter((v) => v !== voter);
+			}
+
+			// Добавляем голос к новому кандидату
+			const candidate = state.candidates.find((c) => c.candidate === newCandidate);
+			if (candidate && !candidate.votes.includes(voter)) {
+				candidate.votes.push(voter);
+			}
+		},
+		finalizeVoting: (state) => {
+			if (!state.candidates.length) return;
+
+			const previousCandidatesCount = state.candidates.length;
+
+			const maxVotes = Math.max(...state.candidates.map((c) => c.votes.length));
+			const winners = state.candidates.filter((c) => c.votes.length === maxVotes);
+
+			const currentCandidatesCount = winners.length;
+			const isSameCandidatesCount = currentCandidatesCount === previousCandidatesCount;
+
+			state.candidates = winners.map((c) => ({ candidate: c.candidate, votes: [] }));
+
+			const winnersSet = new Set(winners.map((w) => w.candidate));
 			state.nominatedPlayers = Object.fromEntries(
-				state.nominationOrder
-					.filter((candidate) => winnersSet.has(candidate))
-					.flatMap((candidate) =>
-						Object.entries(state.nominatedPlayers).filter(([voter, c]) => Number(c) === candidate),
-					),
+				Object.entries(state.nominatedPlayers).filter(([, c]) => winnersSet.has(Number(c))),
 			);
 
-			state.nominationOrder = state.nominationOrder.filter((c) => winnersSet.has(c));
+			switch (true) {
+				case currentCandidatesCount === 1:
+					state.status = 'speech_after';
+					state.currentPlayerNumber = winners[0].candidate;
+					state.speakingOrder = state.speakingOrder.filter((n) => n !== winners[0].candidate);
+					state.candidates = [];
+					state.nominatedPlayers = {};
+					state.isTieRepeat = false;
+					break;
+
+				case isSameCandidatesCount && state.isTieRepeat:
+					state.status = 'removeall_vote';
+					state.currentPlayerNumber = null;
+					break;
+
+				case isSameCandidatesCount:
+					state.status = 'tie_speech';
+					state.currentPlayerNumber = winners[0].candidate;
+					state.isTieRepeat = true;
+					break;
+
+				default:
+					state.status = 'tie_speech';
+					state.currentPlayerNumber = winners[0].candidate;
+					state.isTieRepeat = false;
+			}
 
 			state.currentCandidate = null;
-			state.voting = {};
-			state.votedPlayers = [];
-			state.status = 'speech_after';
 		},
+		voteRemoveAll: (state, action) => {
+			const voter = action.payload;
+
+			if (!state.removeAllVotes.includes(voter)) {
+				state.removeAllVotes.push(voter);
+			}
+		},
+		finalizeRemoveAll: (state) => {
+			if (!state.removeAllVotes.length) return;
+
+			const majority = Math.floor(state.speakingOrder.length / 2) + 1; // больше половины
+			const enoughVotes = state.removeAllVotes.length >= majority;
+
+			if (enoughVotes) {
+				// Удаляем всех кандидатов
+				state.speakingOrder = state.speakingOrder.filter(
+					(n) => !state.candidates.some((c) => c.candidate === n),
+				);
+			}
+
+			// Очистка после голосования
+			state.removeAllVotes = [];
+			state.candidates = [];
+			state.nominatedPlayers = {};
+			state.currentCandidate = null;
+			state.currentPlayerNumber = null;
+			state.isTieRepeat = false;
+			state.status = 'idle';
+		},
+
 		endSpeechAfter: (state) => {
 			state.currentPlayerNumber = null;
-			state.speechAllowed = false;
-			state.status = 'empty';
+			state.nominatedPlayers = {};
+			state.status = 'idle';
 		},
 		endDay: (state) => {
-			state.status = 'discussion';
+			state.status = 'idle';
+			state.removedDuringDiscussion = false;
+			state.nominatedPlayers = {};
 		},
+
+		checkDraw: (state) => {
+			if (!state.killedPlayer) state.noKillNights++;
+			else state.noKillNights = 0;
+
+			if (state.noKillNights >= 3) {
+				state.status = 'draw';
+			}
+		},
+		clearStatus: (state) => {
+			state.status = 'idle';
+		},
+		resetMatch: () => initialState,
 	},
 });
 
@@ -153,6 +320,17 @@ export const startMatch = () => (dispatch, getState) => {
 
 	dispatch(setSpeakingOrder(speakingOrder));
 };
+export const advancePhase = () => (dispatch, getState) => {
+	const { phase, dayNumber } = getState().match;
+
+	// checkDraw вызываем только если ночь и день > 0 (нулевая ночь не считается)
+	if (phase === 'night' && dayNumber > 0) {
+		dispatch(checkDraw());
+	}
+
+	// переход к следующей фазе
+	dispatch(switchPhase());
+};
 
 export const {
 	setSpeakingOrder,
@@ -160,19 +338,26 @@ export const {
 	nominatePlayer,
 	killPlayer,
 	kickPlayer,
-	startSpeachBefore,
 	endSpeechBefore,
 	startDiscussion,
+	enableNomination,
+	disableNomination,
 	nextSpeaker,
 	endDiscussion,
-	prepVoting,
 	startVoting,
 	votePlayer,
 	nextVotingPlayer,
+	nextTieSpeaker,
 	endVoting,
-	startSpeechAfter,
+	reassignVote,
+	finalizeVoting,
+	voteRemoveAll,
+	finalizeRemoveAll,
 	endSpeechAfter,
 	endDay,
+	checkDraw,
+	clearStatus,
+	switchPhase,
 } = matchSlice.actions;
 
 export default matchSlice.reducer;

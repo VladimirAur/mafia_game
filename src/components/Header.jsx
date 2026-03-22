@@ -2,15 +2,13 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { resetRoles } from '../redux/slices/roleSlice';
-import { nextPhase, resetPhase } from '../redux/slices/phaseSlice';
-import { endDay, resetMatch, startDiscussion, startSpeachBefore } from '../redux/slices/matchSlice';
+import { resetMatch, advancePhase } from '../redux/slices/matchSlice';
 import { resetPlayers, setOnRole } from '../redux/slices/playerSlice';
 
 const Header = ({ linkToNaming, linkToOptions, daySwitcher }) => {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
-	const { phase, dayNumber } = useSelector((state) => state.phases);
-	const { speechAllowed, nominatedPlayers, status } = useSelector((state) => state.match);
+	const { phase, dayNumber, nominatedPlayers } = useSelector((state) => state.match);
 
 	const hasNominated = Object.keys(nominatedPlayers).length > 0;
 	const phaseRu = phase === 'day' ? 'День' : 'Ночь';
@@ -22,18 +20,13 @@ const Header = ({ linkToNaming, linkToOptions, daySwitcher }) => {
 	const startNewGame = () => {
 		setActiveBurger(false);
 		dispatch(resetRoles());
-		dispatch(resetPhase());
 		dispatch(resetPlayers());
 		dispatch(resetMatch());
 		navigate('/');
 	};
 
-	const switchPhase = () => {
-		if (phase === 'night' && status === 'speech_before') dispatch(startSpeachBefore());
-		if (phase === 'night' && status === 'discussion') dispatch(startDiscussion());
-		if (phase === 'day' && (status === 'speech_after' || status === 'empty')) dispatch(endDay());
-
-		dispatch(nextPhase());
+	const onNextPhase = () => {
+		dispatch(advancePhase());
 	};
 
 	const showRole = () => {
@@ -53,16 +46,16 @@ const Header = ({ linkToNaming, linkToOptions, daySwitcher }) => {
 			<div className="header__buttons">
 				{regularPhase && (
 					<button
-						className={`header__switch ${speechAllowed || hasNominated ? 'header__switch--disabled' : ''}`}
-						onClick={switchPhase}
-						disabled={speechAllowed || hasNominated}
+						className={`header__switch ${hasNominated ? 'header__switch--disabled' : ''}`}
+						onClick={onNextPhase}
+						disabled={hasNominated}
 					>
 						{phaseRu} {dayNumber}
 						<span className="icon-right"></span>
 					</button>
 				)}
 				{firstNight && (
-					<button className="header__switch" onClick={switchPhase}>
+					<button className="header__switch" onClick={onNextPhase}>
 						Ночь знакомств
 					</button>
 				)}

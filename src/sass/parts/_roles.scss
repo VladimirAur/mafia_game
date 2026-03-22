@@ -5,7 +5,56 @@
 	justify-content: space-between;
 	box-sizing: border-box;
 	&__options {
-		overflow-y: auto;
+		// overflow-y: auto;
+	}
+	&__head {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+	}
+	&__choose {
+		display: flex;
+		align-items: center;
+
+		&-text {
+			margin-right: 5px;
+			font-size: 16px;
+			font-family: $rb-rg;
+			color: $text-secondary;
+			text-transform: uppercase;
+		}
+	}
+	&__switch {
+		display: inline-block;
+		width: 60px; /* ширина */
+		height: 30px; /* высота */
+		border-radius: 19px; /* радиус скругления */
+		background: #646262; /* цвет фона */
+		z-index: 0;
+		margin: 0;
+		padding: 0;
+		border: none;
+		cursor: pointer;
+		position: relative;
+		transition-duration: 300ms; /* анимация */
+		&:after {
+			content: '';
+			height: 24px; /* высота кнопки */
+			width: 24px; /* ширина кнопки */
+			border-radius: 17px;
+			background: #fff; /* цвет кнопки */
+			top: 3px; /* положение кнопки по вертикали относительно основы */
+			left: 3px; /* положение кнопки по горизонтали относительно основы */
+			transition-duration: 300ms; /* анимация */
+			position: absolute;
+			z-index: 1;
+		}
+		&--active {
+			background: $color-primary;
+			&::after {
+				left: 32px;
+			}
+		}
 	}
 
 	// .roles__title
@@ -110,6 +159,9 @@
 	justify-content: space-between;
 	align-items: center;
 	margin-bottom: 10px;
+	&-test {
+		margin-bottom: 1px;
+	}
 
 	// .role__name
 	&__name {
@@ -140,6 +192,9 @@
 			font-size: 20px;
 			margin-right: 0;
 		}
+		&-test {
+			border-radius: 0;
+		}
 	}
 
 	// .role__count
@@ -159,6 +214,11 @@
 		&--mod {
 			font-size: 16px;
 			border-radius: 0 5px 5px 0;
+			span {
+				font-size: 25px;
+				display: block;
+				transform: rotate(90deg);
+			}
 		}
 		&:active {
 			background-color: $bg-card;
