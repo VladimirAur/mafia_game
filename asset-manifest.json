@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/mafia_game/static/css/main.7bf2af09.css",
-    "main.js": "/mafia_game/static/js/main.2994d860.js",
+    "main.js": "/mafia_game/static/js/main.2d8dd57c.js",
     "static/media/Rubik-Regular.ttf": "/mafia_game/static/media/Rubik-Regular.974ab100afa4538622da.ttf",
     "static/media/Rubik-Medium.ttf": "/mafia_game/static/media/Rubik-Medium.9eca2a21c16a15364ea0.ttf",
     "static/media/Mulish-Bold.ttf": "/mafia_game/static/media/Mulish-Bold.84c15758a512288dca5b.ttf",
@@ -23,10 +23,10 @@
     "static/media/icomoon.ttf?jbvjef": "/mafia_game/static/media/icomoon.0fd8a406fc798ac7ec9f.ttf",
     "index.html": "/mafia_game/index.html",
     "main.7bf2af09.css.map": "/mafia_game/static/css/main.7bf2af09.css.map",
-    "main.2994d860.js.map": "/mafia_game/static/js/main.2994d860.js.map"
+    "main.2d8dd57c.js.map": "/mafia_game/static/js/main.2d8dd57c.js.map"
   },
   "entrypoints": [
     "static/css/main.7bf2af09.css",
-    "static/js/main.2994d860.js"
+    "static/js/main.2d8dd57c.js"
   ]
 }
