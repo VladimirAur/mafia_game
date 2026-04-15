@@ -7,6 +7,8 @@ import {
 	killPlayer,
 	reassignVote,
 	voteRemoveAll,
+	removeNomination,
+	removeVote,
 } from '../../redux/slices/matchSlice';
 import { deletePlayer, incrementFoul, decrementFoul, loseByPlayer } from '../../redux/slices/playerSlice';
 import PlayersConfirmPopup from './PlayersConfirmPopup';
@@ -16,10 +18,10 @@ import PlayersFoulsPopup from './PlayersFoulsPopup';
 
 const PlayersItem = ({ number, nickname, role, foul, ban, hasTimer, candidate }) => {
 	const dispatch = useDispatch();
-	const { phase, status, nominatedPlayers, candidates, removeAllVotes } = useSelector((state) => state.match);
+	const { phase, status, candidates, removeAllVotes, currentPlayerNumber } = useSelector((state) => state.match);
 	const onRole = useSelector((state) => state.players.onRole);
 
-	const nominatedNumber = nominatedPlayers[number];
+	const nominatedNumber = candidates.find((c) => c.nominatedBy === number)?.candidate;
 	const nowDiscussion = status === 'discussion_on';
 	const nowVoting = status === 'voting';
 	const nowRemoveAllVoting = status === 'removeall_vote';
@@ -37,6 +39,15 @@ const PlayersItem = ({ number, nickname, role, foul, ban, hasTimer, candidate })
 	const [activePopup, setActivePopup] = React.useState(false);
 	const [confirmPopup, setConfirmPopup] = React.useState('empty');
 	const [showCandidates, setShowCandidates] = React.useState(false);
+	const [showAgree, setShowAgree] = React.useState(null);
+	const [showRole, setShowRole] = React.useState(false);
+
+	const handleShowRole = () => {
+		setShowRole(true);
+		setTimeout(() => {
+			setShowRole(false);
+		}, 1000);
+	};
 
 	const addFoul = (number) => {
 		dispatch(incrementFoul(number));
@@ -46,11 +57,26 @@ const PlayersItem = ({ number, nickname, role, foul, ban, hasTimer, candidate })
 		dispatch(decrementFoul(number));
 		setActivePopup(false);
 	};
-
-	const handleNominatePlayer = (number) => {
-		if (nowDiscussion) dispatch(nominatePlayer(number));
+	const showAgreeNomenee = (number) => {
+		setShowAgree(number);
+		setTimeout(() => {
+			setShowAgree(null);
+		}, 1000);
 	};
 
+	const handleNominatePlayer = (number, currentPlayerNumber) => {
+		if (nowDiscussion) dispatch(nominatePlayer(number));
+		if (
+			candidates.some((c) => c.candidate === number) &&
+			!candidates.some((c) => c.nominatedBy === currentPlayerNumber)
+		) {
+			showAgreeNomenee(number);
+		}
+	};
+	const handleRemoveNomination = (number) => {
+		dispatch(removeNomination(number));
+		setActivePopup(false);
+	};
 	const closePopup = () => {
 		setActivePopup(false);
 	};
@@ -66,6 +92,11 @@ const PlayersItem = ({ number, nickname, role, foul, ban, hasTimer, candidate })
 
 	const giveVoice = (number) => {
 		dispatch(votePlayer(number));
+	};
+
+	const handleRemoveVote = (number) => {
+		dispatch(removeVote(number));
+		setActivePopup(false);
 	};
 
 	const giveVoiceForRemove = (number) => {
@@ -99,7 +130,7 @@ const PlayersItem = ({ number, nickname, role, foul, ban, hasTimer, candidate })
 				{nowDiscussion && (
 					<button
 						className={`player__number ${nowDiscussion && !ban ? 'player__number--active' : ''}`}
-						onClick={() => handleNominatePlayer(number)}
+						onClick={() => handleNominatePlayer(number, currentPlayerNumber)}
 						disabled={ban}
 					>
 						{number}
@@ -127,10 +158,16 @@ const PlayersItem = ({ number, nickname, role, foul, ban, hasTimer, candidate })
 
 				<div
 					className={`player__desc ${hasTimer ? 'player__desc--active' : ''} ${candidate ? 'player__desc--voting' : ''}`}
+					onClick={() => handleShowRole()}
 				>
 					<div className="player__name">{nickname ? nickname : 'Игрок'}</div>
 					{phase === 'night' && (
 						<div className={`player__status ${onRole ? 'player__status--active ' : ''}`}>
+							<div className="player__role">{role}</div>
+						</div>
+					)}
+					{phase === 'night' && !onRole && (
+						<div className={`player__status ${showRole ? 'player__status--active ' : ''}`}>
 							<div className="player__role">{role}</div>
 						</div>
 					)}
@@ -149,9 +186,15 @@ const PlayersItem = ({ number, nickname, role, foul, ban, hasTimer, candidate })
 					)}
 				</div>
 				<PlayersFouls number={number} foul={foul} addFoul={addFoul} />
-				<button className="player__foll-btn player__foll-del" onClick={openPopup} disabled={ban}>
+				<button className="player__foll-btn player__foll-del" onClick={openPopup}>
 					<span className="icon-close"></span>
 				</button>
+			</div>
+
+			<div className={`players__message ${showAgree ? 'players__message--active' : ''}`}>
+				<div className="players__message-set">
+					<div className="players__message-caution">Выставление игрока {showAgree} поддерживается</div>
+				</div>
 			</div>
 
 			{activePopup && (
@@ -163,6 +206,8 @@ const PlayersItem = ({ number, nickname, role, foul, ban, hasTimer, candidate })
 					revote={revote}
 					showCandidates={showCandidates}
 					setShowCandidates={setShowCandidates}
+					handleRemoveVote={handleRemoveVote}
+					handleRemoveNomination={handleRemoveNomination}
 				/>
 			)}
 			{foul > 3 && ban !== true && (
@@ -177,6 +222,7 @@ const PlayersItem = ({ number, nickname, role, foul, ban, hasTimer, candidate })
 					removePlayer={removePlayer}
 					killByMafia={killByMafia}
 					teamLoss={teamLoss}
+					hasNominee={hasNominee}
 				/>
 			)}
 		</li>

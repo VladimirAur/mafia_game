@@ -68,6 +68,11 @@
 			color: $text-primary;
 		}
 	}
+	&__head {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+	}
 
 	// .players__advert
 	&__advert {
@@ -82,6 +87,7 @@
 		margin-bottom: 30px;
 		font-size: 20px;
 		font-family: $ms-rg;
+		text-align: center;
 		color: $text-secondary;
 	}
 
@@ -112,6 +118,30 @@
 			background-color: $color-secondary;
 		}
 		//
+	}
+	&__message {
+		position: absolute;
+		top: -60px;
+		left: 0;
+		width: 100%;
+		z-index: 10;
+		transition: all 0.2s ease-in 0s;
+		&--active {
+			top: 0;
+		}
+		&-set {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			width: 100%;
+			padding: 20px 0;
+			background-color: $bg-header;
+		}
+		&-caution {
+			font-size: 16px;
+			font-family: $ms-rg;
+			color: $text-primary;
+		}
 	}
 }
 
@@ -149,11 +179,15 @@
 		border-radius: 5px;
 		box-sizing: border-box;
 		z-index: 10;
+
 		&--active {
 			outline: 1px solid $color-secondary;
 			outline-offset: -1px;
 			cursor: pointer;
 			box-sizing: border-box;
+			&:focus {
+				outline: 1px solid $color-secondary;
+			}
 		}
 	}
 

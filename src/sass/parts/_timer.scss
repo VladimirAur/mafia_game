@@ -28,6 +28,9 @@
 		font-family: $ms-sb;
 		color: $text-secondary;
 		margin-right: 10px;
+		&--warning {
+			color: $accent;
+		}
 	}
 
 	// .timer__button

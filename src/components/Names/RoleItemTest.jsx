@@ -3,14 +3,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setPlayerRole } from '../../redux/slices/playerSlice';
 import { selectRoles } from '../../redux/slices/roleSlice';
 
-const RoleItemTest = ({ name, number, switchFocus }) => {
+const RoleItemTest = ({ name, number, switchRoleList }) => {
 	const dispatch = useDispatch();
 	const { mainRoles } = useSelector(selectRoles);
 
 	const handleClick = () => {
 		const role = mainRoles.find((r) => r.name === name);
 		if (role) dispatch(setPlayerRole({ number, role }));
-		switchFocus();
+		switchRoleList();
 	};
 	return (
 		<li className="role role-test" onClick={handleClick}>

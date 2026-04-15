@@ -169,7 +169,7 @@
 		align-items: center;
 		width: 100%;
 		padding: 15px 10px;
-		margin-right: 10px;
+		margin-right: 5px;
 		font-family: $rb-rg;
 		font-size: 16px;
 		color: $text-secondary;
@@ -194,6 +194,7 @@
 		}
 		&-test {
 			border-radius: 0;
+			cursor: pointer;
 		}
 	}
 
@@ -212,6 +213,7 @@
 		color: $text-primary;
 		background-color: $bg-number;
 		&--mod {
+			display: inline-block;
 			font-size: 16px;
 			border-radius: 0 5px 5px 0;
 			span {
@@ -244,6 +246,10 @@
 		font-family: $rb-rg;
 		color: $text-secondary;
 		background-color: $bg-card;
+		&--md {
+			width: 49px;
+			border-radius: 10px;
+		}
 	}
 
 	// .role__btn-right

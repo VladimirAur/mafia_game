@@ -1,13 +1,14 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { setOnRole } from './playerSlice';
 
 const initialState = {
 	phase: 'night',
 	dayNumber: 0,
 	speakingOrder: [],
+	firstSpeakerOfDay: null,
 	spokePlayers: [],
 	currentPlayerNumber: null,
 	removedDuringDiscussion: false,
-	nominatedPlayers: {},
 	currentCandidate: null,
 	candidates: [],
 	killedPlayer: null,
@@ -38,12 +39,14 @@ const matchSlice = createSlice({
 					case state.status === 'idle':
 						state.status = 'discussion_off';
 						state.currentPlayerNumber = state.speakingOrder[0] || null;
+						state.firstSpeakerOfDay = state.speakingOrder[0];
 						break;
 				}
 			} else {
 				if (state.status === 'speech_after' || state.status === 'idle') {
 					state.spokePlayers = [];
 					state.currentPlayerNumber = null;
+					state.firstSpeakerOfDay = state.speakingOrder[0];
 					state.candidates = [];
 				}
 
@@ -55,6 +58,7 @@ const matchSlice = createSlice({
 			state.spokePlayers = state.spokePlayers.filter((n) => n !== action.payload);
 			state.removedDuringDiscussion = true;
 			state.noKillNights = 0;
+			if (state.killedPlayer === action.payload && state.phase === 'night') state.status = 'idle';
 		},
 
 		killPlayer: (state, action) => {
@@ -69,21 +73,32 @@ const matchSlice = createSlice({
 			state.status = 'discussion_off';
 			state.killedPlayer = null;
 		},
-		startDiscussion: (state) => {
-			state.currentPlayerNumber = state.speakingOrder[0] || null; // первый говорящий
-			state.status = 'discussion_off'; // обсуждение началось, но таймер пока не включен
-		},
+
 		enableNomination: (state) => {
 			state.status = 'discussion_on';
 		},
 
-		disableNomination: (state) => {
-			state.status = 'discussion_off';
-		},
 		nominatePlayer: (state, action) => {
-			const speaker = state.speakingOrder[0];
+			const speaker = state.currentPlayerNumber;
+			const candidate = action.payload;
+
 			if (state.status !== 'discussion_on') return;
-			state.nominatedPlayers[speaker] = action.payload;
+
+			// уже номинировал
+			if (state.candidates.some((c) => c.nominatedBy === speaker)) return;
+
+			// уже есть такой кандидат
+			if (state.candidates.some((c) => c.candidate === candidate)) return;
+
+			state.candidates.push({
+				candidate,
+				votes: [],
+				nominatedBy: speaker,
+			});
+		},
+		removeNomination: (state, action) => {
+			const speaker = action.payload;
+			state.candidates = state.candidates.filter((c) => c.nominatedBy !== speaker);
 		},
 		nextSpeaker: (state) => {
 			const current = state.currentPlayerNumber;
@@ -101,17 +116,11 @@ const matchSlice = createSlice({
 			state.status = 'discussion_off';
 		},
 		endDiscussion: (state) => {
-			const candidates = [];
-			for (const setter of Object.keys(state.nominatedPlayers)) {
-				const candidate = state.nominatedPlayers[setter];
-				if (!candidates.some((c) => c.candidate === candidate)) {
-					candidates.push({ candidate: Number(candidate), votes: [] });
-				}
-			}
+			const candidates = state.candidates;
 
 			switch (true) {
 				case state.removedDuringDiscussion:
-					state.nominatedPlayers = {};
+					state.candidates = [];
 					state.status = 'idle';
 					break;
 
@@ -124,26 +133,26 @@ const matchSlice = createSlice({
 				case candidates.length === 1:
 					state.status = 'speech_after';
 					state.currentPlayerNumber = candidates[0].candidate;
+					state.speakingOrder = state.speakingOrder.filter((n) => n !== candidates[0].candidate);
+					state.spokePlayers = state.spokePlayers.filter((n) => n !== candidates[0].candidate);
 					break;
 
 				default:
-					state.nominatedPlayers = {};
+					state.candidates = [];
 					state.status = 'idle';
 			}
 
 			const alive = [...state.spokePlayers].sort((a, b) => a - b);
+			let startIndex = alive.findIndex((n) => n > state.firstSpeakerOfDay);
 
-			// игрок, с которого начинаем
-			const startPlayer = state.dayNumber + 1;
-			// находим его индекс
-			const startIndex = alive.indexOf(startPlayer);
-			// если вдруг такого нет (например выбыл) — берём ближайшего следующего
-			const safeIndex = startIndex !== -1 ? startIndex : 0;
-			state.speakingOrder = [...alive.slice(safeIndex), ...alive.slice(0, safeIndex)];
+			if (startIndex === -1) startIndex = 0;
+
+			state.speakingOrder = [...alive.slice(startIndex), ...alive.slice(0, startIndex)];
 
 			if (state.status !== 'speech_after') {
 				state.currentPlayerNumber = null;
 			}
+
 			state.removedDuringDiscussion = false;
 		},
 
@@ -168,6 +177,16 @@ const matchSlice = createSlice({
 			// 3. Добавляем голос
 			candidate.votes.push(voter);
 		},
+		removeVote: (state, action) => {
+			const voter = action.payload;
+
+			const candidate = state.candidates.find((c) => c.votes.includes(voter));
+
+			if (candidate) {
+				candidate.votes = candidate.votes.filter((v) => v !== voter);
+			}
+			state.removeAllVotes = state.removeAllVotes.filter((v) => v !== voter);
+		},
 		nextTieSpeaker: (state) => {
 			const index = state.candidates.findIndex((c) => c.candidate === state.currentPlayerNumber);
 
@@ -178,6 +197,7 @@ const matchSlice = createSlice({
 			} else {
 				state.currentPlayerNumber = null;
 				state.currentCandidate = state.candidates[0]?.candidate;
+				state.isTieRepeat = true;
 				state.status = 'voting';
 			}
 		},
@@ -197,7 +217,6 @@ const matchSlice = createSlice({
 		},
 		reassignVote: (state, action) => {
 			const { voter, newCandidate } = action.payload;
-			console.log(voter, newCandidate);
 
 			// Удаляем голос у старого кандидата
 			const oldCandidate = state.candidates.find((c) => c.votes.includes(voter));
@@ -224,18 +243,13 @@ const matchSlice = createSlice({
 
 			state.candidates = winners.map((c) => ({ candidate: c.candidate, votes: [] }));
 
-			const winnersSet = new Set(winners.map((w) => w.candidate));
-			state.nominatedPlayers = Object.fromEntries(
-				Object.entries(state.nominatedPlayers).filter(([, c]) => winnersSet.has(Number(c))),
-			);
-
 			switch (true) {
 				case currentCandidatesCount === 1:
 					state.status = 'speech_after';
 					state.currentPlayerNumber = winners[0].candidate;
 					state.speakingOrder = state.speakingOrder.filter((n) => n !== winners[0].candidate);
+					state.noKillNights = 0;
 					state.candidates = [];
-					state.nominatedPlayers = {};
 					state.isTieRepeat = false;
 					break;
 
@@ -266,7 +280,7 @@ const matchSlice = createSlice({
 			}
 		},
 		finalizeRemoveAll: (state) => {
-			if (!state.removeAllVotes.length) return;
+			// if (!state.removeAllVotes.length) return;
 
 			const majority = Math.floor(state.speakingOrder.length / 2) + 1; // больше половины
 			const enoughVotes = state.removeAllVotes.length >= majority;
@@ -276,12 +290,13 @@ const matchSlice = createSlice({
 				state.speakingOrder = state.speakingOrder.filter(
 					(n) => !state.candidates.some((c) => c.candidate === n),
 				);
+				state.spokePlayers = state.spokePlayers.filter((n) => !state.candidates.some((c) => c.candidate === n));
+				state.noKillNights = 0;
 			}
 
 			// Очистка после голосования
 			state.removeAllVotes = [];
 			state.candidates = [];
-			state.nominatedPlayers = {};
 			state.currentCandidate = null;
 			state.currentPlayerNumber = null;
 			state.isTieRepeat = false;
@@ -290,13 +305,7 @@ const matchSlice = createSlice({
 
 		endSpeechAfter: (state) => {
 			state.currentPlayerNumber = null;
-			state.nominatedPlayers = {};
 			state.status = 'idle';
-		},
-		endDay: (state) => {
-			state.status = 'idle';
-			state.removedDuringDiscussion = false;
-			state.nominatedPlayers = {};
 		},
 
 		checkDraw: (state) => {
@@ -329,6 +338,7 @@ export const advancePhase = () => (dispatch, getState) => {
 	}
 
 	// переход к следующей фазе
+	dispatch(setOnRole(false));
 	dispatch(switchPhase());
 };
 
@@ -336,16 +346,15 @@ export const {
 	setSpeakingOrder,
 	resetMatch,
 	nominatePlayer,
+	removeNomination,
 	killPlayer,
 	kickPlayer,
 	endSpeechBefore,
-	startDiscussion,
 	enableNomination,
-	disableNomination,
 	nextSpeaker,
 	endDiscussion,
-	startVoting,
 	votePlayer,
+	removeVote,
 	nextVotingPlayer,
 	nextTieSpeaker,
 	endVoting,
@@ -354,7 +363,6 @@ export const {
 	voteRemoveAll,
 	finalizeRemoveAll,
 	endSpeechAfter,
-	endDay,
 	checkDraw,
 	clearStatus,
 	switchPhase,

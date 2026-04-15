@@ -3,6 +3,20 @@ import { createSelector } from '@reduxjs/toolkit';
 
 const rolesArray = [
 	{
+		name: 'Дон',
+		number: 1,
+		color: 'black',
+		icon: 'icon-dollar',
+		img: 'assets/img/don.svg',
+	},
+	{
+		name: 'Шериф',
+		number: 1,
+		icon: 'icon-badge',
+		color: 'red',
+		img: 'assets/img/sherif.svg',
+	},
+	{
 		id: '',
 		name: 'Мафия',
 		number: 2,
@@ -17,20 +31,7 @@ const rolesArray = [
 		color: 'red',
 		img: 'assets/img/peace.svg',
 	},
-	{
-		name: 'Дон',
-		number: 1,
-		color: 'black',
-		icon: 'icon-dollar',
-		img: 'assets/img/don.svg',
-	},
-	{
-		name: 'Шериф',
-		number: 1,
-		icon: 'icon-badge',
-		color: 'red',
-		img: 'assets/img/sherif.svg',
-	},
+
 	{
 		name: 'Любовница',
 		number: 0,

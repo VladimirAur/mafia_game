@@ -33,6 +33,17 @@ const playerSlice = createSlice({
 			const player = state.playersData.find((player) => player.number === deleteNumber);
 			player.ban = true;
 		},
+		deleteFewPlayers: (state, action) => {
+			const playersToDelete = action.payload; // [1, 3, 5]
+			console.log(action.payload);
+
+			playersToDelete.forEach((num) => {
+				const player = state.playersData.find((p) => p.number === Number(num));
+				if (player) {
+					player.ban = true;
+				}
+			});
+		},
 		checkWinner: (state) => {
 			const activePlayers = state.playersData.filter((p) => !p.ban);
 
@@ -78,6 +89,7 @@ export const {
 	incrementFoul,
 	decrementFoul,
 	deletePlayer,
+	deleteFewPlayers,
 	checkWinner,
 	loseByPlayer,
 	clearGameStatus,

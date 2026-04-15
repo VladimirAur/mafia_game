@@ -82,6 +82,7 @@ const Roles = () => {
 							key={role.name}
 							role={role}
 							id={role.id}
+							sportGame={sportGame}
 							resetRole={resetRole}
 							incRoleNumber={incRoleNumber}
 							decRoleNumber={decRoleNumber}

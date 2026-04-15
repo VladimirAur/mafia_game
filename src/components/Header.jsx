@@ -5,12 +5,12 @@ import { resetRoles } from '../redux/slices/roleSlice';
 import { resetMatch, advancePhase } from '../redux/slices/matchSlice';
 import { resetPlayers, setOnRole } from '../redux/slices/playerSlice';
 
-const Header = ({ linkToNaming, linkToOptions, daySwitcher }) => {
+const Header = ({ linkToOptions, daySwitcher, linkToNaming }) => {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
-	const { phase, dayNumber, nominatedPlayers } = useSelector((state) => state.match);
+	const { phase, dayNumber } = useSelector((state) => state.match);
+	const onRole = useSelector((state) => state.players.onRole);
 
-	const hasNominated = Object.keys(nominatedPlayers).length > 0;
 	const phaseRu = phase === 'day' ? 'День' : 'Ночь';
 	const firstNight = daySwitcher && dayNumber === 0;
 	const regularPhase = daySwitcher && dayNumber !== 0;
@@ -25,40 +25,28 @@ const Header = ({ linkToNaming, linkToOptions, daySwitcher }) => {
 		navigate('/');
 	};
 
-	const onNextPhase = () => {
-		dispatch(advancePhase());
-	};
+	// const onNextPhase = () => {
+	// 	dispatch(advancePhase());
+	// };
 
-	const showRole = () => {
-		dispatch(setOnRole(true));
-		setTimeout(() => {
-			dispatch(setOnRole(false));
-		}, 1000);
+	const switchOnRole = () => {
+		dispatch(setOnRole(!onRole));
 	};
 
 	return (
 		<div className="header">
 			{linkToOptions && <Link to="/" className="header__prev icon-left2"></Link>}
 			{linkToNaming && <Link to="/drawing" className="header__prev icon-left2"></Link>}
-			<h2 className="header__name" onClick={() => showRole()}>
+			<h2 className="header__name" onClick={() => switchOnRole()}>
 				<span className="icon-mafiya"></span>Mafia
 			</h2>
 			<div className="header__buttons">
 				{regularPhase && (
-					<button
-						className={`header__switch ${hasNominated ? 'header__switch--disabled' : ''}`}
-						onClick={onNextPhase}
-						disabled={hasNominated}
-					>
+					<div className={`header__switch ${phase === 'night' ? 'header__switch--night' : ''}`}>
 						{phaseRu} {dayNumber}
-						<span className="icon-right"></span>
-					</button>
+					</div>
 				)}
-				{firstNight && (
-					<button className="header__switch" onClick={onNextPhase}>
-						Ночь знакомств
-					</button>
-				)}
+				{firstNight && <div className="header__switch header__switch--night">Ночь знакомств</div>}
 				<button
 					className={`header__burger ${activeBurger ? 'header__burger--active' : ''}`}
 					onClick={() => setActiveBurger(!activeBurger)}

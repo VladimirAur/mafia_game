@@ -1,7 +1,7 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-	disableNomination,
+	advancePhase,
 	enableNomination,
 	endDiscussion,
 	endSpeechAfter,
@@ -15,9 +15,11 @@ import { deletePlayer } from '../redux/slices/playerSlice';
 
 const Timer = () => {
 	const dispatch = useDispatch();
-	const { speakingOrder, status, currentPlayerNumber, currentCandidate, candidates } = useSelector(
+	const { speakingOrder, status, currentPlayerNumber, currentCandidate, candidates, dayNumber, phase } = useSelector(
 		(state) => state.match,
 	);
+	// Проверка для таймера в первую ночь
+	const firstNight = dayNumber === 0;
 	// Проверки для ежедневных монологов
 	const nowDiscussion = status === 'discussion_off' || status === 'discussion_on';
 	const isLastSpeaker = speakingOrder.length === 1;
@@ -30,13 +32,31 @@ const Timer = () => {
 	const nowTieSpeech = status === 'tie_speech';
 	const isLastTieSpeaker = currentPlayerNumber === candidates[candidates.length - 1]?.candidate;
 
-	const getSecondsByStatus = {
-		discussion_off: 60,
-		discussion_on: 60,
-		voting: 2,
-		tie_speech: 30,
+	const getSeconds = (status, phase, dayNumber) => {
+		switch (true) {
+			// первая ночь
+			case phase === 'night' && dayNumber === 0:
+				return 90;
+
+			// дневные статусы
+			case status === 'discussion_off':
+			case status === 'discussion_on':
+			case status === 'speech_after':
+			case status === 'speech_before':
+				return 60;
+
+			case status === 'voting':
+				return 2;
+
+			case status === 'tie_speech':
+				return 30;
+
+			default:
+				return 60;
+		}
 	};
-	const seconds = getSecondsByStatus[status] ?? 30;
+
+	const seconds = getSeconds(status, phase, dayNumber) ?? 60;
 
 	const [time, setTime] = React.useState(seconds);
 	const [timerOn, setTimerOn] = React.useState(false);
@@ -48,9 +68,6 @@ const Timer = () => {
 			setTime((t) => {
 				if (t <= 1) {
 					clearInterval(id);
-					if (status === 'discussion_on') {
-						dispatch(disableNomination());
-					}
 					setTimerOn(false); // останавливаем таймер
 					return 0;
 				}
@@ -65,6 +82,12 @@ const Timer = () => {
 		if (status === 'discussion_off') dispatch(enableNomination());
 	};
 
+	const pauseTimer = () => {
+		setTimerOn(false);
+	};
+	const onNextPhase = () => {
+		dispatch(advancePhase());
+	};
 	const handleNextPlayer = () => {
 		setTime(seconds);
 		setTimerOn(false);
@@ -79,10 +102,12 @@ const Timer = () => {
 	const finishSpeech = (playerNumber) => {
 		if (status === 'speech_before') {
 			dispatch(endSpeechBefore());
+			setTime(seconds);
 			setTimerOn(false);
 		} else {
 			dispatch(endSpeechAfter());
 			dispatch(deletePlayer(playerNumber));
+			setTime(seconds);
 			setTimerOn(false);
 		}
 	};
@@ -105,6 +130,12 @@ const Timer = () => {
 
 	return (
 		<div className="player__timer timer">
+			{firstNight && (
+				<div className="timer__text">
+					{time > 35 ? 'Просыпается Дон и Мафия' : time > 30 ? 'Мафия засыпает' : 'Вольная посадка'}
+				</div>
+			)}
+
 			{currentPlayerNumber && (
 				<div className="timer__text">
 					{status === 'speech_after' || status === 'speech_before' ? 'Прощальная речь игрока' : 'Речь игрока'}{' '}
@@ -112,12 +143,29 @@ const Timer = () => {
 				</div>
 			)}
 			{currentCandidate && <div className="timer__text">Голосование за игрока {currentCandidate}</div>}
+
 			<div className="timer__control">
-				<div className="timer__count">{time} сек</div>
+				<div
+					className={`timer__count ${
+						(firstNight && time <= 35 && time > 30) || (!firstNight && time <= 11)
+							? 'timer__count--warning'
+							: ''
+					}`}
+				>
+					{time} сек
+				</div>
+				<button className="timer__button" onClick={pauseTimer}>
+					<span className="icon-pause2"></span>
+				</button>
 				<button className="timer__button" onClick={startTimer}>
 					<span className="icon-play3"></span>
 				</button>
 			</div>
+			{firstNight && (
+				<button className="timer__button" onClick={() => onNextPhase()}>
+					Закончить знакомство
+				</button>
+			)}
 			{nowSingleSpeech && (
 				<button className="timer__button" onClick={() => finishSpeech(currentPlayerNumber)}>
 					Закончить речь
@@ -139,7 +187,7 @@ const Timer = () => {
 				</button>
 			)}
 			{isLastCandidate && (
-				<button className="timer__button" onClick={finishElection}>
+				<button className="timer__button" onClick={() => finishElection()}>
 					Закончить голосование
 				</button>
 			)}

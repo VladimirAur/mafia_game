@@ -1,7 +1,7 @@
 import React from 'react';
 import PlayersItem from './PlayersItem';
 import { useDispatch, useSelector } from 'react-redux';
-import { checkWinner, clearGameStatus, resetPlayers } from '../../redux/slices/playerSlice';
+import { checkWinner, clearGameStatus, deleteFewPlayers, resetPlayers } from '../../redux/slices/playerSlice';
 import {
 	resetMatch,
 	advancePhase,
@@ -27,19 +27,18 @@ const Players = () => {
 		currentPlayerNumber,
 		timerMode,
 		status,
-		nominatedPlayers,
+		candidates,
 		currentCandidate,
 		removeAllVotes,
 	} = useSelector((state) => state.match);
 
-	// const { phase, dayNumber } = useSelector((state) => state.phases);
-	// const nominatedArray = [...new Set(Object.values(nominatedPlayers))];
-	const nominatedList = [...new Set(Object.values(nominatedPlayers))].join(', ');
+	const firstNight = dayNumber === 0;
+	const candidatesString = candidates.map((c) => c.candidate).join(', ');
 	const nowRemoveAllVoting = status === 'removeall_vote';
 	const removeAllTotal = removeAllVotes.length;
 	const enoughForRemoveAll = removeAllVotes.length > Math.floor(speakingOrder.length / 2);
 
-	const nowNominate = phase === 'day' && !nominatedList;
+	const nowNominate = phase === 'day' && !candidatesString && status !== 'speech_after';
 	const teamWon = gameStatus === 'winner_red' ? 'красная' : gameStatus === 'winner_black' ? 'черная' : null;
 
 	React.useEffect(() => {
@@ -68,6 +67,9 @@ const Players = () => {
 
 	const endRemoveAllVoting = () => {
 		dispatch(finalizeRemoveAll());
+		if (enoughForRemoveAll) {
+			dispatch(deleteFewPlayers(candidates.map((c) => c.candidate)));
+		}
 	};
 
 	return (
@@ -76,13 +78,13 @@ const Players = () => {
 				{nowNominate && currentPlayerNumber && (
 					<div className="players__tip">Нажмите на номер игрока для выставления.</div>
 				)}
-				{nominatedList && !nowRemoveAllVoting && (
-					<div className="players__tip">Игроки выставленные на голосование: {nominatedList}</div>
+				{candidatesString && !nowRemoveAllVoting && (
+					<div className="players__tip">Игроки выставленные на голосование: {candidatesString}</div>
 				)}
 				{nowRemoveAllVoting && (
 					<div className="players__tip">
 						<span>
-							{enoughForRemoveAll ? 'Будут исключены' : 'За исключение игроков'}: {nominatedList}{' '}
+							{enoughForRemoveAll ? 'Будут исключены' : 'За исключение игроков'}: {candidatesString}{' '}
 						</span>
 						<span>(Голосов: {removeAllTotal})</span>
 					</div>
@@ -114,7 +116,7 @@ const Players = () => {
 					Закончить голосование
 				</button>
 			)}
-			{status === 'idle' && (
+			{status === 'idle' && !firstNight && (
 				<button className="roles__start" onClick={onNextPhase}>
 					{phase === 'day' ? 'Наступает ночь' : 'Наступает день'}
 				</button>
@@ -126,6 +128,8 @@ const Players = () => {
 			)}
 			{currentPlayerNumber && <Timer />}
 			{currentCandidate && <Timer />}
+			{firstNight && <Timer />}
+
 			{(teamWon || status === 'draw') && (
 				<PlayersResultPopup
 					startNewGame={startNewGame}
