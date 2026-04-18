@@ -36,7 +36,7 @@ const Timer = () => {
 		switch (true) {
 			// первая ночь
 			case phase === 'night' && dayNumber === 0:
-				return 90;
+				return 80;
 
 			// дневные статусы
 			case status === 'discussion_off':
@@ -132,7 +132,7 @@ const Timer = () => {
 		<div className="player__timer timer">
 			{firstNight && (
 				<div className="timer__text">
-					{time > 35 ? 'Просыпается Дон и Мафия' : time > 30 ? 'Мафия засыпает' : 'Вольная посадка'}
+					{time > 22 ? 'Просыпается Дон и Мафия' : time > 20 ? 'Мафия засыпает' : 'Вольная посадка'}
 				</div>
 			)}
 
@@ -147,7 +147,7 @@ const Timer = () => {
 			<div className="timer__control">
 				<div
 					className={`timer__count ${
-						(firstNight && time <= 35 && time > 30) || (!firstNight && time <= 11)
+						(firstNight && time <= 22 && time > 20) || (!firstNight && time <= 10)
 							? 'timer__count--warning'
 							: ''
 					}`}
