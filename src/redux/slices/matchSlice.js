@@ -4,6 +4,10 @@ import { setOnRole } from './playerSlice';
 const initialState = {
 	phase: 'night',
 	dayNumber: 0,
+	gameLog: {
+		night_0: ['mafiaIntroduced', 'freeSeating'],
+	},
+	stepIndex: 0,
 	speakingOrder: [],
 	firstSpeakerOfDay: null,
 	spokePlayers: [],
@@ -22,6 +26,23 @@ const matchSlice = createSlice({
 	name: 'match',
 	initialState,
 	reducers: {
+		createDayOrder: (state, action) => {
+			const players = action.payload;
+			const dayNumber = state.dayNumber + 1;
+
+			state.gameLog[`day_${dayNumber}`] = players.map((p) => `discussion_${p}`);
+
+			state.phase = 'day';
+			state.dayNumber = dayNumber;
+			state.stepIndex = 0;
+		},
+		createNightOrder: (state) => {
+			state.gameLog[`night_${state.dayNumber}`] = ['mafiaWake', 'nightAction'];
+
+			state.phase = 'night';
+			state.stepIndex = 0;
+		},
+		// @@@@@@@@@@@@$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 		setSpeakingOrder: (state, action) => {
 			state.speakingOrder = action.payload;
 			state.status = 'idle';
@@ -329,20 +350,42 @@ export const startMatch = () => (dispatch, getState) => {
 
 	dispatch(setSpeakingOrder(speakingOrder));
 };
+// export const advancePhase = () => (dispatch, getState) => {
+// 	const { phase, dayNumber } = getState().match;
+
+// 	// checkDraw вызываем только если ночь и день > 0 (нулевая ночь не считается)
+// 	if (phase === 'night' && dayNumber > 0) {
+// 		dispatch(checkDraw());
+// 	}
+
+// 	// переход к следующей фазе
+// 	dispatch(setOnRole(false));
+// 	dispatch(switchPhase());
+// };
 export const advancePhase = () => (dispatch, getState) => {
 	const { phase, dayNumber } = getState().match;
 
-	// checkDraw вызываем только если ночь и день > 0 (нулевая ночь не считается)
+	const players = getState()
+		.players.playersData.filter((p) => !p.ban)
+		.map((p) => p.number);
+
 	if (phase === 'night' && dayNumber > 0) {
 		dispatch(checkDraw());
 	}
 
-	// переход к следующей фазе
 	dispatch(setOnRole(false));
-	dispatch(switchPhase());
+
+	if (phase === 'night') {
+		dispatch(createDayOrder(players));
+	} else {
+		dispatch(createNightOrder());
+	}
 };
 
 export const {
+	createDayOrder,
+	createNightOrder,
+	// @@@@@@@@@@@@
 	setSpeakingOrder,
 	resetMatch,
 	nominatePlayer,
@@ -369,3 +412,4 @@ export const {
 } = matchSlice.actions;
 
 export default matchSlice.reducer;
+// 376

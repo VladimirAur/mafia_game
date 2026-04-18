@@ -15,9 +15,24 @@ import { deletePlayer } from '../redux/slices/playerSlice';
 
 const Timer = () => {
 	const dispatch = useDispatch();
-	const { speakingOrder, status, currentPlayerNumber, currentCandidate, candidates, dayNumber, phase } = useSelector(
-		(state) => state.match,
-	);
+	const {
+		speakingOrder,
+		status,
+		currentPlayerNumber,
+		currentCandidate,
+		candidates,
+		dayNumber,
+		phase,
+		gameLog,
+		stepIndex,
+	} = useSelector((state) => state.match);
+	// STATE REFACTOR
+	const matchSteps = gameLog[`${phase}_${dayNumber}`] || [];
+	const currentStep = matchSteps[stepIndex];
+	const nextStep = matchSteps[stepIndex + 1];
+
+	// **STATE REFACTOR
+
 	// Проверка для таймера в первую ночь
 	const firstNight = dayNumber === 0;
 	// Проверки для ежедневных монологов
@@ -32,10 +47,10 @@ const Timer = () => {
 	const nowTieSpeech = status === 'tie_speech';
 	const isLastTieSpeaker = currentPlayerNumber === candidates[candidates.length - 1]?.candidate;
 
-	const getSeconds = (status, phase, dayNumber) => {
+	const getSeconds = (status, currentStep) => {
 		switch (true) {
 			// первая ночь
-			case phase === 'night' && dayNumber === 0:
+			case currentStep === 'mafiaIntroduced':
 				return 90;
 
 			// дневные статусы
@@ -56,7 +71,7 @@ const Timer = () => {
 		}
 	};
 
-	const seconds = getSeconds(status, phase, dayNumber) ?? 60;
+	const seconds = getSeconds(status, currentStep) ?? 60;
 
 	const [time, setTime] = React.useState(seconds);
 	const [timerOn, setTimerOn] = React.useState(false);
@@ -130,7 +145,7 @@ const Timer = () => {
 
 	return (
 		<div className="player__timer timer">
-			{firstNight && (
+			{currentStep === 'mafiaIntroduced' && (
 				<div className="timer__text">
 					{time > 35 ? 'Просыпается Дон и Мафия' : time > 30 ? 'Мафия засыпает' : 'Вольная посадка'}
 				</div>
@@ -161,7 +176,7 @@ const Timer = () => {
 					<span className="icon-play3"></span>
 				</button>
 			</div>
-			{firstNight && (
+			{currentStep === 'mafiaIntroduced' && (
 				<button className="timer__button" onClick={() => onNextPhase()}>
 					Закончить знакомство
 				</button>
